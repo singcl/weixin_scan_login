@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, Post, Body } from '@nestjs/common';
 import { AppService } from './app.service';
 import { WxCheckSignatureDto } from './dto/wx-check-signature.dto';
 
@@ -17,5 +17,11 @@ export class AppController {
   @Get('handleWxCheckSignature')
   handleWxCheckSignature(@Query() query: WxCheckSignatureDto): string {
     return this.appService.wxCheckSignature(query);
+  }
+
+  @Post('handleWxCheckSignature')
+  handleWxEvent(@Body() body: unknown) {
+    //
+    console.log('----body:', body);
   }
 }

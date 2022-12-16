@@ -38,6 +38,8 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@tresdoce-nestjs-toolkit/paas": "^0.1.6",
+    "body-parser": "^1.20.1",
+    "body-parser-xml": "^2.0.3",
     "joi": "^17.7.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
