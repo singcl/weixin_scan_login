@@ -1,6 +1,7 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, CACHE_MANAGER } from '@nestjs/common';
 import { ConfigType /* ConfigService */ } from '@nestjs/config';
 import { UtilsService } from './utils/services/utils.service';
+import { Cache } from 'cache-manager';
 import {
   WxCheckSignatureDto,
   WxSubscribeEventDto,
@@ -12,9 +13,11 @@ export class AppService {
   constructor(
     // private readonly allConfig: ConfigService,
     @Inject(config.KEY) private readonly appConfig: ConfigType<typeof config>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly utilsService: UtilsService,
   ) {}
-  getHello(): string {
+  async getHello(): Promise<string> {
+    await this.cacheManager.set('key', 'value', 1000);
     return 'Hello World!';
   }
 
