@@ -2,7 +2,19 @@
   "name": "weixin_scan_login",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": {
+    "name": "singcl",
+    "email": "imbabyer@gmail.com",
+    "url": "https://github.com/singcl"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": {
+    "url": "https://github.com/issues"
+  },
+  "homepage": "",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -22,8 +34,11 @@
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
+    "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@tresdoce-nestjs-toolkit/paas": "^0.1.6",
+    "joi": "^17.7.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
