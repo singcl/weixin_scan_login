@@ -1,8 +1,9 @@
-import { Module, MiddlewareConsumer } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { Module, MiddlewareConsumer, CacheModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import * as bodyParser from 'body-parser';
 import * as bodyParserXML from 'body-parser-xml';
-
+import { redisStore } from 'cache-manager-redis-yet';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UtilsModule } from './utils/utils.module';
@@ -13,6 +14,12 @@ bodyParserXML(bodyParser);
 
 @Module({
   imports: [
+    CacheModule.register({
+      // @ts-ignore
+      store: redisStore,
+      host: 'localhost',
+      port: 6379,
+    }),
     ConfigModule.forRoot({
       // envFilePath: environments[`${process.env.NODE_ENV}`],
       // ignoreEnvFile: process.env.NODE_ENV === 'production' || false,
@@ -27,7 +34,6 @@ bodyParserXML(bodyParser);
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     consumer.apply(bodyParser.xml()).forRoutes(AppController);
   }

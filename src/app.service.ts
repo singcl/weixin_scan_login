@@ -30,4 +30,8 @@ export class AppService {
     console.log('----data', data);
     return 'success';
   }
+
+  getWxAccessToken() {
+    //
+  }
 }
