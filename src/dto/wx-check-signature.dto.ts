@@ -7,3 +7,12 @@ export class WxCheckSignatureDto {
   readonly timestamp: string;
   readonly nonce: string;
 }
+
+export class WxSubscribeEventDto {
+  readonly ToUserName: string[];
+  readonly FromUserName: string[];
+  readonly CreateTime: string[];
+  readonly MsgType: string[];
+  readonly Event: string[];
+  readonly EventKey: string[];
+}

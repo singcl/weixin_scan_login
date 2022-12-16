@@ -1,6 +1,9 @@
-import { Controller, Get, Query, Post, Body } from '@nestjs/common';
+import { Controller, Get, Query, Post, Body, HttpCode } from '@nestjs/common';
 import { AppService } from './app.service';
-import { WxCheckSignatureDto } from './dto/wx-check-signature.dto';
+import {
+  WxCheckSignatureDto,
+  WxSubscribeEventDto,
+} from './dto/wx-check-signature.dto';
 
 @Controller()
 export class AppController {
@@ -19,9 +22,14 @@ export class AppController {
     return this.appService.wxCheckSignature(query);
   }
 
+  // 暂时只处理订阅/取消订阅事件
+  // 默认情况下，响应的状态码总是默认为 200，除了 POST 请求（默认响应状态码为 201）
   @Post('handleWxCheckSignature')
-  handleWxEvent(@Body() body: unknown) {
+  @HttpCode(200)
+  handleWxEvent(@Body() body: { xml?: WxSubscribeEventDto }) {
     //
-    console.log('----body:', body);
+    const { xml } = body;
+    if (!xml) return '';
+    return this.appService.wxEvent(xml);
   }
 }
