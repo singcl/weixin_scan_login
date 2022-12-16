@@ -32,6 +32,7 @@ export default registerAs(
     },
     params: {
       testEnv: process.env.TEST_KEY,
+      weixinMpCheckToken: process.env.WEIXIN_MP_CHECK_TOKEN,
     },
     services: {
       nestJsDocs: {
