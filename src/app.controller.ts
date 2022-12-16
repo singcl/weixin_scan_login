@@ -3,6 +3,7 @@ import { AppService } from './app.service';
 import { WxCheckSignatureDto } from './dto/wx-check-signature.dto';
 import * as crypto from 'crypto';
 import { ConfigType /* ConfigService */ } from '@nestjs/config';
+import { UtilsService } from './utils/services/utils.service';
 
 import { config } from './config';
 // 不能写成这样：
@@ -14,10 +15,12 @@ export class AppController {
     private readonly appService: AppService,
     // private readonly allConfig: ConfigService,
     @Inject(config.KEY) private readonly appConfig: ConfigType<typeof config>,
+    private readonly utilsService: UtilsService,
   ) {}
 
   @Get()
   getHello(): string {
+    console.log('-----utils:', this.utilsService.myCustomUtil());
     return this.appService.getHello();
   }
   // 验证消息的确来自微信服务器

@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UtilsModule } from './utils/utils.module';
 
 import { config, /*  environments, */ validationSchema } from './config';
 
@@ -15,6 +16,7 @@ import { config, /*  environments, */ validationSchema } from './config';
       isGlobal: true,
       validationSchema,
     }),
+    UtilsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
