@@ -10,6 +10,7 @@ import {
   WxCheckSignatureDto,
   WxSubscribeEventDto,
   WxTokenApiDto,
+  WxQrcodeApiDto,
 } from './dto/wx-check-signature.dto';
 
 import { config } from './config';
@@ -24,7 +25,6 @@ export class AppService {
     private readonly httpService: HttpService,
   ) {}
   async getHello(): Promise<string> {
-    this.getWxAccessToken();
     return 'Hello World!';
   }
 
@@ -63,6 +63,18 @@ export class AppService {
 
   //获取临时二维码
   async getQrCode() {
-    //
+    const token = await this.getWxAccessToken();
+    const url = this.utilsService.sprintf(
+      this.appConfig.params.weixinApiQrCodeUrl,
+      [token],
+    );
+    const { data } = await firstValueFrom(
+      this.httpService.post<WxQrcodeApiDto>(url, {
+        expire_seconds: 604800,
+        action_name: 'QR_STR_SCENE',
+        action_info: { scene: { scene_str: 'test' } },
+      }),
+    );
+    return data;
   }
 }
