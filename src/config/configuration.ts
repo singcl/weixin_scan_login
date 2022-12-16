@@ -32,6 +32,7 @@ export default registerAs('config', () => ({
     weixinMpCheckToken: process.env.WEIXIN_MP_CHECK_TOKEN,
     weixinAppId: process.env.WX_APP_ID,
     weixinAppSecret: process.env.WX_APP_SECRET,
+    weixinApiTokenUrl: process.env.WX_API_TOKEN_URL,
   },
   services: {
     nestJsDocs: {

@@ -16,4 +16,9 @@ export class UtilsService {
     if (signatureCurr === signature) return echostr;
     return null;
   }
+  sprintf(template: string, values: string[]): string {
+    return template.replace(/%s/g, function () {
+      return values.shift();
+    });
+  }
 }

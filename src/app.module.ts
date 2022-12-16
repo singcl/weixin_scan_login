@@ -4,6 +4,8 @@ import { ConfigModule } from '@nestjs/config';
 import * as bodyParser from 'body-parser';
 import * as bodyParserXML from 'body-parser-xml';
 import { redisStore } from 'cache-manager-redis-yet';
+import { HttpModule } from '@nestjs/axios';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UtilsModule } from './utils/utils.module';
@@ -28,6 +30,7 @@ bodyParserXML(bodyParser);
       validationSchema,
     }),
     UtilsModule,
+    HttpModule,
   ],
   controllers: [AppController],
   providers: [AppService],

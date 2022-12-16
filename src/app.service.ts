@@ -2,12 +2,18 @@ import { Injectable, Inject, CACHE_MANAGER } from '@nestjs/common';
 import { ConfigType /* ConfigService */ } from '@nestjs/config';
 import { UtilsService } from './utils/services/utils.service';
 import { Cache } from 'cache-manager';
+import { v4 as uuidv4 } from 'uuid';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
+
 import {
   WxCheckSignatureDto,
   WxSubscribeEventDto,
+  WxTokenApiDto,
 } from './dto/wx-check-signature.dto';
 
 import { config } from './config';
+
 @Injectable()
 export class AppService {
   constructor(
@@ -15,9 +21,10 @@ export class AppService {
     @Inject(config.KEY) private readonly appConfig: ConfigType<typeof config>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly utilsService: UtilsService,
+    private readonly httpService: HttpService,
   ) {}
   async getHello(): Promise<string> {
-    await this.cacheManager.set('key', 'value', 1000);
+    this.getWxAccessToken();
     return 'Hello World!';
   }
 
@@ -29,12 +36,33 @@ export class AppService {
 
   // 暂时只处理订阅/取消订阅事件
   wxEvent(data: WxSubscribeEventDto) {
-    //
+    // TODO:
     console.log('----data', data);
     return 'success';
   }
 
-  getWxAccessToken() {
+  //获取临时token
+  async getWxAccessToken() {
+    //
+    const key = uuidv4(); // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d';
+    const val = await this.cacheManager.get<string>(key);
+    if (val) return val;
+    const { weixinApiTokenUrl, weixinAppSecret, weixinAppId } =
+      this.appConfig.params;
+    const url = this.utilsService.sprintf(weixinApiTokenUrl, [
+      weixinAppId,
+      weixinAppSecret,
+    ]);
+
+    const {
+      data: { expires_in, access_token },
+    } = await firstValueFrom(this.httpService.get<WxTokenApiDto>(url));
+    await this.cacheManager.set(key, access_token, expires_in);
+    return access_token;
+  }
+
+  //获取临时二维码
+  async getQrCode() {
     //
   }
 }

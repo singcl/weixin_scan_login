@@ -16,3 +16,8 @@ export class WxSubscribeEventDto {
   readonly Event: string[];
   readonly EventKey: string[];
 }
+
+export class WxTokenApiDto {
+  readonly access_token: string;
+  readonly expires_in: number;
+}
