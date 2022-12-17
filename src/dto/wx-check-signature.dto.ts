@@ -28,3 +28,10 @@ export class WxQrcodeApiDto {
   readonly url: string;
   readonly expire_seconds: number;
 }
+
+export class WxLoginQrcodeDto {
+  expires: number;
+  heartBeat: number;
+  sessionKey: string;
+  url: string;
+}

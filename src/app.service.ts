@@ -11,6 +11,7 @@ import {
   WxSubscribeEventDto,
   WxTokenApiDto,
   WxQrcodeApiDto,
+  // WxLoginQrcodeDto,
 } from './dto/wx-check-signature.dto';
 
 import { config } from './config';
@@ -81,5 +82,21 @@ export class AppService {
       }),
     );
     return data;
+  }
+
+  async mpQrcode() {
+    const { ticket, expire_seconds /* , url */ } = await this.getQrCode();
+    const sessionKey = `CreateWechatOfficialAccountQrCode_${uuidv4()}_Login`; // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d';
+    await this.cacheManager.set(sessionKey, ticket, expire_seconds);
+    const qrcodeUrl = this.utilsService.sprintf(
+      this.appConfig.params.weixinMpQrCodeUrl,
+      [ticket],
+    );
+    return {
+      sessionKey,
+      expires: expire_seconds,
+      heartBeat: 5,
+      url: qrcodeUrl,
+    };
   }
 }

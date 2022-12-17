@@ -32,6 +32,11 @@ export class AppController {
     return this.appService.login();
   }
 
+  @Get('mp/qrcode')
+  async mpQrcode() {
+    return this.appService.mpQrcode();
+  }
+
   // 验证消息的确来自微信服务器
   @Get('handleWxCheckSignature')
   handleWxCheckSignature(@Query() query: WxCheckSignatureDto): string {
