@@ -29,6 +29,10 @@ export class AppService {
     return { message: 'Hello world!' };
   }
 
+  login() {
+    return { message: 'Hello world!' };
+  }
+
   // 验证消息的确来自微信服务器
   wxCheckSignature(query: WxCheckSignatureDto): string {
     const TOKEN = this.appConfig.params.weixinMpCheckToken;

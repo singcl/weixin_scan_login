@@ -25,6 +25,13 @@ export class AppController {
   home() {
     return this.appService.home();
   }
+
+  @Get('login')
+  @Render('login')
+  wxLogin() {
+    return this.appService.login();
+  }
+
   // 验证消息的确来自微信服务器
   @Get('handleWxCheckSignature')
   handleWxCheckSignature(@Query() query: WxCheckSignatureDto): string {
