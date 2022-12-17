@@ -1,0 +1,8 @@
+# 将所有的js语言在语言统计中标记为go语言
+# *.js linguist-language=go
+
+# 不统计改路径下的语言
+public/**/* -linguist-detectable
+views/**/*.hbs linguist-language=vue
+# views/templates/admin/**/*.js linguist-language=vue
+# views/templates/authorized/**/*.js linguist-language=vue
