@@ -32,9 +32,15 @@ export class AppController {
     return this.appService.login();
   }
 
+  // 返回微信二维码
   @Get('mp/qrcode')
   async mpQrcode() {
     return this.appService.mpQrcode();
+  }
+
+  @Get('mp/qrcode/check')
+  async mpQrcodeCheck(@Query() query: { sessionKey?: string }) {
+    return this.appService.mpQrcodeCheck(query.sessionKey);
   }
 
   // 验证消息的确来自微信服务器

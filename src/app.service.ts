@@ -99,4 +99,14 @@ export class AppService {
       url: qrcodeUrl,
     };
   }
+
+  async mpQrcodeCheck(sessionKey?: string) {
+    if (!sessionKey)
+      return {
+        success: false,
+        token: null,
+      };
+
+    // TODO:
+  }
 }
