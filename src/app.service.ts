@@ -61,7 +61,7 @@ export class AppService {
           const user = new User();
           user.mobile = '130xxxxxxxx';
           user.openid = openid;
-          user.nickname = '微信用户'; // TODO: 随机用户名
+          user.nickname = `微信用户${this.utilsService.getRandomStr()}`;
           this.usersRepository.save(user);
         }
       }

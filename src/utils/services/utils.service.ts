@@ -21,4 +21,31 @@ export class UtilsService {
       return values.shift();
     });
   }
+
+  // 随机生成[min, max]
+  randomInt(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  // 随机生成10位组合字符串
+  getRandomStr(m = 10) {
+    let str = '';
+    for (let i = 0; i < m; i++) {
+      const index = this.randomInt(1, 3);
+      switch (index) {
+        case 1:
+          str += String.fromCharCode(this.randomInt(97, 122));
+          break;
+        case 2:
+          str += String.fromCharCode(this.randomInt(65, 90));
+          break;
+        case 3:
+          str += String(this.randomInt(0, 9));
+          break;
+        default:
+          break;
+      }
+    }
+    return str;
+  }
 }
