@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Module, MiddlewareConsumer, CacheModule } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import * as bodyParser from 'body-parser';
 import * as bodyParserXML from 'body-parser-xml';
@@ -11,6 +12,7 @@ import { AppService } from './app.service';
 import { UtilsModule } from './utils/utils.module';
 
 import { config, /*  environments, */ validationSchema } from './config';
+import { User } from './user.entity';
 
 bodyParserXML(bodyParser);
 
@@ -29,6 +31,17 @@ bodyParserXML(bodyParser);
       isGlobal: true,
       validationSchema,
     }),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'gin',
+      password: 'password',
+      database: 'wx_scan_login',
+      entities: [User],
+      synchronize: true,
+    }),
+    TypeOrmModule.forFeature([User]),
     UtilsModule,
     HttpModule,
   ],

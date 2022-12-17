@@ -15,6 +15,7 @@ export class WxSubscribeEventDto {
   readonly MsgType: string[];
   readonly Event: string[];
   readonly EventKey: string[];
+  readonly Ticket?: string[];
 }
 
 export class WxTokenApiDto {

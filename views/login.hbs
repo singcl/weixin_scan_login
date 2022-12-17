@@ -14,19 +14,43 @@
 <body>
     <div id='app'></div>
     <script type="module">
-        import { createApp, defineComponent, h, onMounted, reactive } from 'vue';
+        import { createApp, defineComponent, h, onMounted, reactive, ref } from 'vue';
         const App = defineComponent((props, { emit }) => {
             //
-            onMounted(() => {
-                getQrcodeInfo()
+            onMounted(async () => {
+                const info = await getQrcodeInfo();
+                qrcodeInfo.info = info;
+                //
+                const { heartBeat, sessionKey, expires } = info;
+                checkRetry(sessionKey, heartBeat);
             })
             const qrcodeInfo = reactive({ info: {} });
+            const timer = ref();
             //
             async function getQrcodeInfo() {
                 const response = await fetch('/mp/qrcode');
                 const data = await response.json();
-                qrcodeInfo.info = data;
+                return data;
             }
+
+            async function checkLogin(sessionKey) {
+                const response = await fetch(`/mp/qrcode/check?sessionKey=${sessionKey}`);
+                const data = await response.json();
+                return data;
+            }
+
+            async function checkRetry(sessionKey, heartBeat) {
+                const data = await checkLogin(sessionKey);
+                if (data.success) {
+                    clearTimeout(timer.value);
+                    localStorage.setItem('token', data.token);
+                    location.href = '/';
+                    return;
+                }
+                timer.value = setTimeout(() => checkRetry(sessionKey, heartBeat), heartBeat * 1000);
+            }
+
+
 
             return () => h('div', { class: 'flex flex-col justify-center items-center h-full' }, [
                 h('h3', ['登录']),

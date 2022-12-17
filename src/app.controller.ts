@@ -53,7 +53,7 @@ export class AppController {
   // 默认情况下，响应的状态码总是默认为 200，除了 POST 请求（默认响应状态码为 201）
   @Post('handleWxCheckSignature')
   @HttpCode(200)
-  handleWxEvent(@Body() body: { xml?: WxSubscribeEventDto }) {
+  async handleWxEvent(@Body() body: { xml?: WxSubscribeEventDto }) {
     //
     const { xml } = body;
     if (!xml) return '';

@@ -5,6 +5,9 @@ import { Cache } from 'cache-manager';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './user.entity';
 
 import {
   WxCheckSignatureDto,
@@ -24,6 +27,8 @@ export class AppService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly utilsService: UtilsService,
     private readonly httpService: HttpService,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
 
   home() {
@@ -41,9 +46,28 @@ export class AppService {
   }
 
   // 暂时只处理订阅/取消订阅事件
-  wxEvent(data: WxSubscribeEventDto) {
-    // TODO:
+  async wxEvent(data: WxSubscribeEventDto) {
     console.log('----data', data);
+    const { Ticket, Event, FromUserName } = data;
+    const event = Event[0].trim();
+    const openid = FromUserName[0].trim();
+    console.log(`用户${openid}: ${event}`);
+    if (['subscribe', 'SCAN'].includes(event)) {
+      const ticket = Ticket && Ticket[0].trim();
+      if (['subscribe'].includes(event)) {
+        // 获取openid判断用户是否存在,不存在则获取新增用户,自己的业务
+        const res = await this.usersRepository.findOneBy({ openid });
+        if (!res) {
+          const user = new User();
+          user.mobile = '130xxxxxxxx';
+          user.openid = openid;
+          user.nickname = '微信用户'; // TODO: 随机用户名
+          this.usersRepository.save(user);
+        }
+      }
+      const sessionKey = this.utilsService.getSha1(ticket);
+      await this.cacheManager.set(sessionKey, openid, 10 * 1000);
+    }
     return 'success';
   }
 
@@ -86,8 +110,7 @@ export class AppService {
 
   async mpQrcode() {
     const { ticket, expire_seconds /* , url */ } = await this.getQrCode();
-    const sessionKey = `CreateWechatOfficialAccountQrCode_${uuidv4()}_Login`; // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d';
-    await this.cacheManager.set(sessionKey, ticket, expire_seconds);
+    const sessionKey = this.utilsService.getSha1(ticket);
     const qrcodeUrl = this.utilsService.sprintf(
       this.appConfig.params.weixinMpQrCodeUrl,
       [ticket],
@@ -101,12 +124,34 @@ export class AppService {
   }
 
   async mpQrcodeCheck(sessionKey?: string) {
-    if (!sessionKey)
+    if (!sessionKey) {
       return {
         success: false,
         token: null,
       };
+    }
 
-    // TODO:
+    const openid: string = await this.cacheManager.get(sessionKey);
+    if (!openid) {
+      return {
+        success: false,
+        token: null,
+      };
+    }
+
+    const token = this.utilsService.getSha1(openid);
+    const res = await this.usersRepository.findOneBy({ openid });
+    if (!res) {
+      return {
+        success: false,
+        token: null,
+      };
+    }
+    await this.cacheManager.set(`login_${token}`, res, 30 * 60 * 1000);
+    await this.cacheManager.del(sessionKey);
+    return {
+      success: true,
+      token: token,
+    };
   }
 }
