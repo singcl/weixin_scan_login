@@ -47,7 +47,7 @@ export class AppService {
 
   // 暂时只处理订阅/取消订阅事件
   async wxEvent(data: WxSubscribeEventDto) {
-    console.log('----data', data);
+    console.log('微信公众号事件推送：', data);
     const { Ticket, Event, FromUserName } = data;
     const event = Event[0].trim();
     const openid = FromUserName[0].trim();
@@ -65,7 +65,8 @@ export class AppService {
           this.usersRepository.save(user);
         }
       }
-      const sessionKey = this.utilsService.getSha1(ticket);
+      const salt = this.appConfig.params.weixinLoginSalt;
+      const sessionKey = this.utilsService.getSha1(ticket + salt);
       await this.cacheManager.set(sessionKey, openid, 10 * 1000);
     }
     return 'success';
@@ -110,7 +111,8 @@ export class AppService {
 
   async mpQrcode() {
     const { ticket, expire_seconds /* , url */ } = await this.getQrCode();
-    const sessionKey = this.utilsService.getSha1(ticket);
+    const salt = this.appConfig.params.weixinLoginSalt;
+    const sessionKey = this.utilsService.getSha1(ticket + salt);
     const qrcodeUrl = this.utilsService.sprintf(
       this.appConfig.params.weixinMpQrCodeUrl,
       [ticket],
@@ -139,7 +141,8 @@ export class AppService {
       };
     }
 
-    const token = this.utilsService.getSha1(openid);
+    const salt = this.appConfig.params.weixinLoginSalt;
+    const token = this.utilsService.getSha1(openid + salt);
     const res = await this.usersRepository.findOneBy({ openid });
     if (!res) {
       return {
