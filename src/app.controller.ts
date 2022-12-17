@@ -1,4 +1,12 @@
-import { Controller, Get, Query, Post, Body, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Post,
+  Body,
+  HttpCode,
+  Render,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 import {
   WxCheckSignatureDto,
@@ -13,8 +21,9 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  async getHello(): Promise<string> {
-    return this.appService.getHello();
+  @Render('index')
+  home() {
+    return this.appService.home();
   }
   // 验证消息的确来自微信服务器
   @Get('handleWxCheckSignature')

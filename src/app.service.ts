@@ -24,8 +24,9 @@ export class AppService {
     private readonly utilsService: UtilsService,
     private readonly httpService: HttpService,
   ) {}
-  async getHello(): Promise<string> {
-    return 'Hello World!';
+
+  home() {
+    return { message: 'Hello world!' };
   }
 
   // 验证消息的确来自微信服务器
