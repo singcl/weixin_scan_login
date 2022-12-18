@@ -40,10 +40,11 @@ export class MpService {
   // 暂时只处理订阅/取消订阅事件
   async wxEvent(data: WxSubscribeEventDto) {
     console.log('微信公众号事件推送：', data);
-    const { Ticket, Event, FromUserName } = data;
-    const event = Event[0].trim();
+    const { Ticket, Event, FromUserName, MsgType } = data;
+    const event = Event && Event[0].trim();
+    const msgType = MsgType && MsgType[0].trim();
     const openid = FromUserName[0].trim();
-    console.log(`用户${openid}: ${event}`);
+    console.log(`用户${openid}: ${event || msgType}`);
     if (['subscribe', 'SCAN'].includes(event)) {
       const ticket = Ticket && Ticket[0].trim();
       await this.usersService.createWxUser(openid, ticket);
