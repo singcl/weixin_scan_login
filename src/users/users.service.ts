@@ -27,17 +27,19 @@ export class UsersService {
   }
 
   async createWxUser(openid: string, ticket: string) {
-    const res = await this.findOneByOpenId(openid);
-    if (res) return res;
+    let res = await this.findOneByOpenId(openid);
     //
-    const user = new User();
-    user.mobile = '130xxxxxxxx';
-    user.openid = openid;
-    user.nickname = `微信用户${this.utilsService.getRandomStr()}`;
-    const r = await this.save(user);
+    if (!res) {
+      const user = new User();
+      user.mobile = '130xxxxxxxx';
+      user.openid = openid;
+      user.nickname = `微信用户${this.utilsService.getRandomStr()}`;
+      res = await this.save(user);
+    }
+
     const salt = this.appConfig.params.weixinLoginSalt;
     const sessionKey = this.utilsService.getSha1(ticket + salt);
     await this.cacheManager.set(sessionKey, openid, 10 * 1000);
-    return r;
+    return res;
   }
 }

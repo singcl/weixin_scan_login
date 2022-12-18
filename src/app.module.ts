@@ -14,13 +14,11 @@ import { config, /*  environments, */ validationSchema } from './config';
 import { User } from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import Cache from './cache/cache.module';
 
 bodyParserXML(bodyParser);
 
 @Module({
   imports: [
-    Cache,
     ConfigModule.forRoot({
       // envFilePath: environments[`${process.env.NODE_ENV}`],
       // ignoreEnvFile: process.env.NODE_ENV === 'production' || false,

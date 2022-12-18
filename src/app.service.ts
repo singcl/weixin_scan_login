@@ -1,8 +1,7 @@
-import { Injectable, Inject, CACHE_MANAGER } from '@nestjs/common';
+import { Injectable, Inject /* CACHE_MANAGER */ } from '@nestjs/common';
 import { ConfigType /* ConfigService */ } from '@nestjs/config';
 import { UtilsService } from './utils/services/utils.service';
-import { Cache } from 'cache-manager';
-import { v4 as uuidv4 } from 'uuid';
+// import { Cache } from 'cache-manager';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { UsersService } from './users/users.service';
@@ -22,7 +21,7 @@ export class AppService {
   constructor(
     // private readonly allConfig: ConfigService,
     @Inject(config.KEY) private readonly appConfig: ConfigType<typeof config>,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    // @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly utilsService: UtilsService,
     private readonly httpService: HttpService,
     private readonly usersService: UsersService,
@@ -58,10 +57,6 @@ export class AppService {
 
   //获取临时token
   async getWxAccessToken() {
-    //
-    const key = uuidv4(); // ⇨ '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d';
-    const val = await this.cacheManager.get<string>(key);
-    if (val) return val;
     const { weixinApiTokenUrl, weixinAppSecret, weixinAppId } =
       this.appConfig.params;
     const url = this.utilsService.sprintf(weixinApiTokenUrl, [
@@ -70,9 +65,8 @@ export class AppService {
     ]);
 
     const {
-      data: { expires_in, access_token },
+      data: { /*  expires_in, */ access_token },
     } = await firstValueFrom(this.httpService.get<WxTokenApiDto>(url));
-    await this.cacheManager.set(key, access_token, expires_in);
     return access_token;
   }
 
@@ -106,39 +100,6 @@ export class AppService {
       expires: expire_seconds,
       heartBeat: 5,
       url: qrcodeUrl,
-    };
-  }
-
-  async mpQrcodeCheck(sessionKey?: string) {
-    if (!sessionKey) {
-      return {
-        success: false,
-        token: null,
-      };
-    }
-
-    const openid: string = await this.cacheManager.get(sessionKey);
-    if (!openid) {
-      return {
-        success: false,
-        token: null,
-      };
-    }
-
-    const salt = this.appConfig.params.weixinLoginSalt;
-    const token = this.utilsService.getSha1(openid + salt);
-    const res = await this.usersService.findOneByOpenId(openid);
-    if (!res) {
-      return {
-        success: false,
-        token: null,
-      };
-    }
-    await this.cacheManager.set(`login_${token}`, res, 30 * 60 * 1000);
-    await this.cacheManager.del(sessionKey);
-    return {
-      success: true,
-      token: token,
     };
   }
 }

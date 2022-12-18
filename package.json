@@ -49,6 +49,7 @@
     "joi": "^17.7.0",
     "mysql2": "^2.3.3",
     "passport": "^0.6.0",
+    "passport-auth-token": "^1.0.1",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

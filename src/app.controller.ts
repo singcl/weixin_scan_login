@@ -6,7 +6,10 @@ import {
   Body,
   HttpCode,
   Render,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
 import {
   WxCheckSignatureDto,
@@ -38,9 +41,13 @@ export class AppController {
     return this.appService.mpQrcode();
   }
 
+  //
+  @UseGuards(AuthGuard('checkScan'))
   @Get('mp/qrcode/check')
-  async mpQrcodeCheck(@Query() query: { sessionKey?: string }) {
-    return this.appService.mpQrcodeCheck(query.sessionKey);
+  async mpQrcodeCheck(
+    /* @Query() query: { sessionKey?: string } */ @Request() req,
+  ) {
+    return req.user;
   }
 
   // 验证消息的确来自微信服务器
