@@ -12,7 +12,9 @@ import { AppService } from './app.service';
 import { UtilsModule } from './utils/utils.module';
 
 import { config, /*  environments, */ validationSchema } from './config';
-import { User } from './user.entity';
+import { User } from './users/user.entity';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 bodyParserXML(bodyParser);
 
@@ -41,9 +43,10 @@ bodyParserXML(bodyParser);
       entities: [User],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([User]),
     UtilsModule,
     HttpModule,
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

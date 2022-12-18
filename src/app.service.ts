@@ -5,9 +5,7 @@ import { Cache } from 'cache-manager';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { UsersService } from './users/users.service';
 
 import {
   WxCheckSignatureDto,
@@ -27,8 +25,7 @@ export class AppService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly utilsService: UtilsService,
     private readonly httpService: HttpService,
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private readonly usersService: UsersService,
   ) {}
 
   home() {
@@ -54,17 +51,11 @@ export class AppService {
     console.log(`用户${openid}: ${event}`);
     if (['subscribe', 'SCAN'].includes(event)) {
       const ticket = Ticket && Ticket[0].trim();
-      if (['subscribe'].includes(event)) {
-        // 获取openid判断用户是否存在,不存在则获取新增用户,自己的业务
-        const res = await this.usersRepository.findOneBy({ openid });
-        if (!res) {
-          const user = new User();
-          user.mobile = '130xxxxxxxx';
-          user.openid = openid;
-          user.nickname = `微信用户${this.utilsService.getRandomStr()}`;
-          this.usersRepository.save(user);
-        }
-      }
+      // 获取openid判断用户是否存在,不存在则获取新增用户,自己的业务
+      // if (['subscribe'].includes(event)) {
+      //   await this.usersService.createWxUser(openid);
+      // }
+      await this.usersService.createWxUser(openid);
       const salt = this.appConfig.params.weixinLoginSalt;
       const sessionKey = this.utilsService.getSha1(ticket + salt);
       await this.cacheManager.set(sessionKey, openid, 10 * 1000);
@@ -143,7 +134,7 @@ export class AppService {
 
     const salt = this.appConfig.params.weixinLoginSalt;
     const token = this.utilsService.getSha1(openid + salt);
-    const res = await this.usersRepository.findOneBy({ openid });
+    const res = await this.usersService.findOneByOpenId(openid);
     if (!res) {
       return {
         success: false,
