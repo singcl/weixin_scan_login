@@ -51,14 +51,7 @@ export class AppService {
     console.log(`用户${openid}: ${event}`);
     if (['subscribe', 'SCAN'].includes(event)) {
       const ticket = Ticket && Ticket[0].trim();
-      // 获取openid判断用户是否存在,不存在则获取新增用户,自己的业务
-      // if (['subscribe'].includes(event)) {
-      //   await this.usersService.createWxUser(openid);
-      // }
-      await this.usersService.createWxUser(openid);
-      const salt = this.appConfig.params.weixinLoginSalt;
-      const sessionKey = this.utilsService.getSha1(ticket + salt);
-      await this.cacheManager.set(sessionKey, openid, 10 * 1000);
+      await this.usersService.createWxUser(openid, ticket);
     }
     return 'success';
   }

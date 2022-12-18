@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Module, MiddlewareConsumer, CacheModule } from '@nestjs/common';
+import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import * as bodyParser from 'body-parser';
 import * as bodyParserXML from 'body-parser-xml';
-import { redisStore } from 'cache-manager-redis-yet';
 import { HttpModule } from '@nestjs/axios';
 
 import { AppController } from './app.controller';
@@ -15,17 +14,13 @@ import { config, /*  environments, */ validationSchema } from './config';
 import { User } from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import Cache from './cache/cache.module';
 
 bodyParserXML(bodyParser);
 
 @Module({
   imports: [
-    CacheModule.register({
-      // @ts-ignore
-      store: redisStore,
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
-    }),
+    Cache,
     ConfigModule.forRoot({
       // envFilePath: environments[`${process.env.NODE_ENV}`],
       // ignoreEnvFile: process.env.NODE_ENV === 'production' || false,
