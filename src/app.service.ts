@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { User } from './users/user.entity';
 
 @Injectable()
 export class AppService {
@@ -6,7 +7,7 @@ export class AppService {
     //
   }
 
-  home() {
-    return { message: 'Hello world!' };
+  home(user: User) {
+    return { nickname: `${user.nickname}` };
   }
 }

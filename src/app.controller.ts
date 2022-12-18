@@ -1,4 +1,4 @@
-import { Controller, Get, Render, UseGuards } from '@nestjs/common';
+import { Controller, Get, Render, UseGuards, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
 
@@ -9,7 +9,7 @@ export class AppController {
   @UseGuards(AuthGuard('checkToken'))
   @Get()
   @Render('index')
-  home() {
-    return this.appService.home();
+  async home(@Request() req: Record<any, any>) {
+    return this.appService.home(req.user);
   }
 }

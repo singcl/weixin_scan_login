@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
 // 不能写成这样：
 // import crypto from 'crypto';
-import { WxCheckSignatureDto } from '../../dto/wx-check-signature.dto';
+import { WxCheckSignatureDto } from '../../mp/dtos/wx-check-signature.dto';
 @Injectable()
 export class UtilsService {
   // sha1加密
