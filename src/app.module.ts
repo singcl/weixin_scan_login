@@ -1,21 +1,14 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Module, MiddlewareConsumer } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import * as bodyParser from 'body-parser';
-import * as bodyParserXML from 'body-parser-xml';
-import { HttpModule } from '@nestjs/axios';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UtilsModule } from './utils/utils.module';
 
 import { config, /*  environments, */ validationSchema } from './config';
 import { User } from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-
-bodyParserXML(bodyParser);
+import { MpModule } from './mp/mp.module';
 
 @Module({
   imports: [
@@ -36,17 +29,10 @@ bodyParserXML(bodyParser);
       entities: [User],
       synchronize: true,
     }),
-    UtilsModule,
-    HttpModule,
     AuthModule,
-    UsersModule,
+    MpModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    // @ts-ignore
-    consumer.apply(bodyParser.xml()).forRoutes(AppController);
-  }
-}
+export class AppModule {}
