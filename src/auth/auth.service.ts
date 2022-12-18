@@ -1,4 +1,9 @@
-import { Injectable, Inject, CACHE_MANAGER } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  CACHE_MANAGER,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { ConfigType /* ConfigService */ } from '@nestjs/config';
 import { UtilsService } from './../utils/services/utils.service';
@@ -47,5 +52,13 @@ export class AuthService {
       success: true,
       token: token,
     };
+  }
+
+  async validateToken(token?: string) {
+    if (!token) throw new UnauthorizedException();
+    const user = await this.cacheManager.get(`login_${token}`);
+    if (!user) throw new UnauthorizedException();
+    // TODO：更多业务判断
+    return user;
   }
 }

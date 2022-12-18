@@ -23,6 +23,7 @@ export class AppController {
   // private readonly utilsService: UtilsService,
   constructor(private readonly appService: AppService) {}
 
+  @UseGuards(AuthGuard('checkToken'))
   @Get()
   @Render('index')
   home() {

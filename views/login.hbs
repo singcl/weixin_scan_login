@@ -44,7 +44,7 @@
                 if (data.success) {
                     clearTimeout(timer.value);
                     localStorage.setItem('token', data.token);
-                    location.href = '/';
+                    location.href = `/?ticket=${data.token}`;
                     return;
                 }
                 timer.value = setTimeout(() => checkRetry(sessionKey, heartBeat), heartBeat * 1000);
