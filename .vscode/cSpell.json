@@ -7,6 +7,7 @@
         "Qrcode",
         "SERV",
         "sprintf",
+        "typeorm",
         "weixin"
     ]
 }
