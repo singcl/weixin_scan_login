@@ -9,10 +9,10 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/singcl/weixin_scan_login.git"
   },
   "bugs": {
-    "url": "https://github.com/issues"
+    "url": "https://github.com/singcl/weixin_scan_login/issues"
   },
   "homepage": "",
   "private": true,
@@ -97,5 +97,6 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  }
+  },
+  "engines" : { "node" : ">=16" }
 }
