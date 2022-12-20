@@ -61,13 +61,26 @@ export class AuthService {
     //  再根据 userId 获取 userInfo 。这里同上，用户访问页面的时候尽量不要去检查和更新 userInfo 里的loginTokenList。
     const tokenKey = `wechat:login_user:${token}`;
     const openidKey = `wechat:login_openid:${openid}`;
-    await this.cacheManager.set(tokenKey, res, ttl);
-    const list: string[] | null = await this.cacheManager.get(openidKey);
-    if (!list) {
-      await this.cacheManager.set(openidKey, [tokenKey], ttl);
+    //
+    await this.cacheManager.set(tokenKey, openidKey, ttl);
+    const user: Record<string, any> | null = await this.cacheManager.get(
+      openidKey,
+    );
+    if (!user) {
+      await this.cacheManager.set(
+        openidKey,
+        {
+          ...res,
+          loginTokenList: [tokenKey],
+        },
+        ttl,
+      );
     } else {
-      list.push(tokenKey);
-      await this.cacheManager.set(openidKey, list, ttl);
+      const res2 = {
+        ...user,
+        loginTokenList: [...user.loginTokenList, tokenKey],
+      };
+      await this.cacheManager.set(openidKey, res2, ttl);
     }
     await this.cacheManager.del(sessionKey);
     return {
@@ -78,9 +91,12 @@ export class AuthService {
 
   async validateToken(token?: string) {
     if (!token) throw new UnauthorizedException();
-    const user = await this.cacheManager.get(`wechat:login:${token}`);
+    const openidKey: string | null = await this.cacheManager.get(
+      `wechat:login_user:${token}`,
+    );
+    if (!openidKey) throw new UnauthorizedException();
+    const user = await this.cacheManager.get(openidKey);
     if (!user) throw new UnauthorizedException();
-    // TODO：更多业务判断
     return user;
   }
 }
