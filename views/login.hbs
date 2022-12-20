@@ -1,64 +1,68 @@
 <html lang='en'>
 
 <head>
-    <meta charset='UTF-8' />
-    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-    <script src='/js/lib/tailwind.min.js'></script>
-    <script type='importmap'>
+  <meta charset='UTF-8' />
+  <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+  <script src='/js/lib/tailwind.min.js'></script>
+  <script type='importmap'>
       { "imports": { "vue": "/js/vue/vue3.esm-browser.js" } }
     </script>
-    <title>登录</title>
+  <title>登录</title>
 </head>
 
 <body>
-    <div id='app'></div>
-    <script type="module">
-        import { createApp, defineComponent, h, onMounted, reactive, ref } from 'vue';
-        const App = defineComponent((props, { emit }) => {
-            //
-            onMounted(async () => {
-                const info = await getQrcodeInfo();
-                qrcodeInfo.info = info;
-                //
-                const { heartBeat, sessionKey, expires } = info;
-                checkRetry(sessionKey, heartBeat);
-            })
-            const qrcodeInfo = reactive({ info: {} });
-            const timer = ref();
-            //
-            async function getQrcodeInfo() {
-                const response = await fetch('/mp/qrcode');
-                const data = await response.json();
-                return data;
-            }
+  <div id='app'></div>
+  <script type="module">
+    import { createApp, defineComponent, h, onMounted, reactive, ref } from 'vue';
+    const App = defineComponent((props, { emit }) => {
+      //
+      onMounted(async () => {
+        const info = await getQrcodeInfo();
+        qrcodeInfo.info = info;
+        //
+        const { heartBeat, sessionKey, expires } = info;
+        checkRetry(sessionKey, heartBeat);
+      })
+      const qrcodeInfo = reactive({ info: {} });
+      const timer = ref();
+      //
+      async function getQrcodeInfo() {
+        const response = await fetch('/mp/qrcode');
+        const data = await response.json();
+        return data;
+      }
 
-            async function checkLogin(sessionKey) {
-                const response = await fetch(`/mp/qrcode/check?sessionKey=${sessionKey}`);
-                const data = await response.json();
-                return data;
-            }
+      async function checkLogin(sessionKey) {
+        const response = await fetch(`/mp/qrcode/check?sessionKey=${sessionKey}`, {
+          headers: {
+            'WxToken': localStorage.getItem('WxToken')
+          }
+        });
+        const data = await response.json();
+        return data;
+      }
 
-            async function checkRetry(sessionKey, heartBeat) {
-                const data = await checkLogin(sessionKey);
-                if (data.success) {
-                    clearTimeout(timer.value);
-                    localStorage.setItem('token', data.token);
-                    location.href = `/?ticket=${data.token}`;
-                    return;
-                }
-                timer.value = setTimeout(() => checkRetry(sessionKey, heartBeat), heartBeat * 1000);
-            }
+      async function checkRetry(sessionKey, heartBeat) {
+        const data = await checkLogin(sessionKey);
+        if (data.success) {
+          clearTimeout(timer.value);
+          localStorage.setItem('WxToken', data.token);
+          location.href = `/?ticket=${data.token}`;
+          return;
+        }
+        timer.value = setTimeout(() => checkRetry(sessionKey, heartBeat), heartBeat * 1000);
+      }
 
 
 
-            return () => h('div', { class: 'flex flex-col justify-center items-center h-full' }, [
-                h('h3', ['登录']),
-                h('img', { src: qrcodeInfo.info.url, alt: "登录二维码", class: 'max-w-xs max-h-xs' })
-            ])
-        })
-        createApp(App).mount('#app');
-    </script>
+      return () => h('div', { class: 'flex flex-col justify-center items-center h-full' }, [
+        h('h3', ['登录']),
+        h('img', { src: qrcodeInfo.info.url, alt: "登录二维码", class: 'max-w-xs max-h-xs' })
+      ])
+    })
+    createApp(App).mount('#app');
+  </script>
 </body>
 
 </html>
