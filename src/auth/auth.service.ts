@@ -21,7 +21,7 @@ export class AuthService {
   ) {
     //
   }
-  //
+  // TODO:z怎么优雅更新redis key 的过期时间？
   async updateRedisKeyTTL(key: string, ttl: number) {
     const value = await this.cacheManager.get(key);
     if (value) {
@@ -29,7 +29,10 @@ export class AuthService {
     }
   }
   //
-  async validateScanSuccess(sessionKey?: string): Promise<any> {
+  async validateScanSuccess(
+    sessionKey?: string,
+    cToken?: string,
+  ): Promise<any> {
     //
     if (!sessionKey) {
       return {
@@ -51,6 +54,23 @@ export class AuthService {
         success: false,
         token: null,
       };
+    }
+
+    // 如果有token, 更新当前用户token后直接返回
+    if (cToken) {
+      const openidKey: string | null = await this.cacheManager.get(
+        `wechat:login_user:${cToken}`,
+      );
+      if (openidKey) {
+        const ttl = 30 * 60 * 1000;
+        await this.updateRedisKeyTTL(`wechat:login_user:${cToken}`, ttl);
+        await this.updateRedisKeyTTL(openidKey, ttl);
+        await this.cacheManager.del(sessionKey);
+        return {
+          success: true,
+          token: cToken,
+        };
+      }
     }
 
     //

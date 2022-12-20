@@ -9,13 +9,14 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'checkScan') {
     super({
       tokenFields: ['sessionKey'],
       params: true,
-      // passReqToCallback: true,
+      passReqToCallback: true,
     });
   }
 
-  async validate(
-    /* req: Record<any, any>, */ sessionKey: string,
-  ): Promise<any> {
-    return await this.authService.validateScanSuccess(sessionKey);
+  async validate(req: Record<any, any>, sessionKey: string): Promise<any> {
+    return await this.authService.validateScanSuccess(
+      sessionKey,
+      req.header('WxToken'),
+    );
   }
 }
