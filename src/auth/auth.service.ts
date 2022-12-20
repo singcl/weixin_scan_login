@@ -21,7 +21,16 @@ export class AuthService {
   ) {
     //
   }
+  //
+  async updateRedisKeyTTL(key: string, ttl: number) {
+    const value = await this.cacheManager.get(key);
+    if (value) {
+      await this.cacheManager.set(key, value, ttl);
+    }
+  }
+  //
   async validateScanSuccess(sessionKey?: string): Promise<any> {
+    //
     if (!sessionKey) {
       return {
         success: false,
@@ -120,6 +129,9 @@ export class AuthService {
     if (!openidKey) throw new UnauthorizedException();
     const user = await this.cacheManager.get(openidKey);
     if (!user) throw new UnauthorizedException();
+    const ttl = 30 * 60 * 1000;
+    await this.updateRedisKeyTTL(`wechat:login_user:${token}`, ttl);
+    await this.updateRedisKeyTTL(openidKey, ttl);
     return user;
   }
 }
