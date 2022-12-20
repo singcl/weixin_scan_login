@@ -46,7 +46,18 @@ export class AuthService {
 
     const salt = this.appConfig.params.weixinLoginSalt;
     const token = this.utilsService.genRandomToken(openid, salt);
-    await this.cacheManager.set(`login_${token}`, res, 30 * 60 * 1000);
+    const ttl = 30 * 60 * 1000;
+    // 设置两个缓存，同时记录同一个账号的登录数量
+    const tokenKey = `wechat:login_user:${token}`;
+    const openidKey = `wechat:login_openid:${openid}`;
+    await this.cacheManager.set(tokenKey, res, ttl);
+    const list: string[] | null = await this.cacheManager.get(openidKey);
+    if (!list) {
+      await this.cacheManager.set(openidKey, [tokenKey], ttl);
+    } else {
+      list.push(tokenKey);
+      await this.cacheManager.set(openidKey, list, ttl);
+    }
     await this.cacheManager.del(sessionKey);
     return {
       success: true,
@@ -56,7 +67,7 @@ export class AuthService {
 
   async validateToken(token?: string) {
     if (!token) throw new UnauthorizedException();
-    const user = await this.cacheManager.get(`login_${token}`);
+    const user = await this.cacheManager.get(`wechat:login:${token}`);
     if (!user) throw new UnauthorizedException();
     // TODO：更多业务判断
     return user;
