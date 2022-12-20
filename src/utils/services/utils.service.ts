@@ -9,6 +9,10 @@ export class UtilsService {
   getSha1(str: string) {
     return crypto.createHash('sha1').update(str).digest('hex');
   }
+  // md5
+  getMd5(str: string) {
+    return crypto.createHash('md5').update(str).digest('hex');
+  }
   checkWxSha1Equal(query: WxCheckSignatureDto, token: string) {
     const { signature, timestamp, nonce, echostr } = query;
     const str = [token, timestamp, nonce].sort().join('');
