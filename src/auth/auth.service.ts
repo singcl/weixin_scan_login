@@ -45,7 +45,7 @@ export class AuthService {
     }
 
     const salt = this.appConfig.params.weixinLoginSalt;
-    const token = this.utilsService.getSha1(openid + salt);
+    const token = this.utilsService.genRandomToken(openid, salt);
     await this.cacheManager.set(`login_${token}`, res, 30 * 60 * 1000);
     await this.cacheManager.del(sessionKey);
     return {

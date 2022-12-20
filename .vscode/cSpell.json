@@ -9,6 +9,7 @@
         "SERV",
         "sprintf",
         "typeorm",
+        "uuidv",
         "weixin"
     ]
 }

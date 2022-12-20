@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
 // 不能写成这样：
 // import crypto from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 import { WxCheckSignatureDto } from '../../mp/dtos/wx-check-signature.dto';
 @Injectable()
 export class UtilsService {
@@ -51,5 +52,13 @@ export class UtilsService {
       }
     }
     return str;
+  }
+  // 生成随机token
+  genRandomToken(openid: string, salt: string) {
+    const hash = crypto.createHash('md5');
+    hash.update(openid);
+    hash.update(salt);
+    hash.update(uuidv4());
+    return hash.digest('hex');
   }
 }
