@@ -56,9 +56,34 @@
 
 
 
-      return () => h('div', { class: 'flex flex-col justify-center items-center h-full' }, [
-        h('h3', ['登录']),
-        h('img', { src: qrcodeInfo.info.url, alt: "登录二维码", class: 'max-w-xs max-h-xs' })
+      return () => h('div', { class: 'flex flex-col justify-center h-screen bg-cover bg-[url("https://cdn.apifox.cn/mirror-www/web/static/bg-texture.c61f6dbd.svg")]' }, [
+        h('div', null, [
+          h('div', { class: 'flex flex-col items-center justify-center px-6' }, [
+            h('div', { class: 'h-[400px] rounded-lg bg-white' }, [
+              h('div', { class: 'flex flex-col items-center justify-center p-6' }, [
+                h('div', { class: 'flex flex-col items-center justify-content text-center w-full' }, [
+                  h('h3', { class: 'my-4 text-xl' }, ['微信登录']),
+                  h('p', { class: 'm-0 text-sm' }, [
+                    '请使用 ',
+                    h('a', { class: 'text-green-500' }, ['微信扫码']),
+                    ' 关注公众号即可安全登录'
+                  ]),
+                  h('div', { class: 'flex items-center justify-center' }, [
+                    h('div', { class: 'rounded-md my-4 p-4 relative overflow-hidden bg-transparent w-[208px] h-[208px] border border-solid border-slate-200' }, [
+                      h('img', { src: qrcodeInfo.info.url, alt: "登录二维码", class: 'w-full h-full' })
+                    ])
+                  ]),
+                  h('p', { class: 'flex items-start flex-wrap mb-6 text-sm' }, [
+                    '扫码表示您同意',
+                    h('a', { class: 'text-green-500' }, ['服务协议']),
+                    '和',
+                    h('a', { class: 'text-green-500' }, ['隐私条款']),
+                  ])
+                ])
+              ])
+            ])
+          ])
+        ])
       ])
     })
     createApp(App).mount('#app');
