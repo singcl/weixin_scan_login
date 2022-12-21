@@ -5,12 +5,14 @@
         "FRPS",
         "IMCOCO",
         "importmap",
+        "ionicons",
         "nestjs",
         "Qrcode",
         "SERV",
         "sprintf",
         "typeorm",
         "uuidv",
+        "vicons",
         "wechat",
         "weixin"
     ]
