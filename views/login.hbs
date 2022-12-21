@@ -70,7 +70,7 @@
                   ]),
                   h('div', { class: 'flex items-center justify-center' }, [
                     h('div', { class: 'rounded-md my-4 p-4 relative overflow-hidden bg-transparent w-[208px] h-[208px] border border-solid border-slate-200' }, [
-                      h('img', { src: qrcodeInfo.info.url, alt: "登录二维码", class: 'w-full h-full' })
+                      qrcodeInfo.info.url && h('img', { src: qrcodeInfo.info.url, alt: "登录二维码", class: 'w-full h-full' })
                     ])
                   ]),
                   h('p', { class: 'flex items-start flex-wrap mb-6 text-sm' }, [
