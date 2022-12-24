@@ -5,7 +5,11 @@ import { firstValueFrom } from 'rxjs';
 
 import { config } from './../config';
 import { UtilsService } from '../utils/services/utils.service';
-import { WxTokenApiDto, WxCode2SessionApiDto } from './dtos/mini-sdk.dto';
+import {
+  WxTokenApiDto,
+  WxCode2SessionApiDto,
+  WxQrcodeApiDto,
+} from './dtos/mini-sdk.dto';
 
 @Injectable()
 export class MiniSdkService {
@@ -40,6 +44,38 @@ export class MiniSdkService {
     ]);
     const { data } = await firstValueFrom(
       this.httpService.get<WxCode2SessionApiDto>(url),
+    );
+    return data;
+  }
+
+  // 公众号获取临时token
+  async getWxAccessToken() {
+    const { weixinApiTokenUrl, weixinAppSecret, weixinAppId } =
+      this.appConfig.params;
+    const url = this.utilsService.sprintf(weixinApiTokenUrl, [
+      weixinAppId,
+      weixinAppSecret,
+    ]);
+
+    const { data } = await firstValueFrom(
+      this.httpService.get<WxTokenApiDto>(url),
+    );
+    return data;
+  }
+
+  // 获取公众号临时二维码
+  async getMpQrCode() {
+    const { access_token } = await this.getWxAccessToken();
+    const url = this.utilsService.sprintf(
+      this.appConfig.params.weixinApiQrCodeUrl,
+      [access_token],
+    );
+    const { data } = await firstValueFrom(
+      this.httpService.post<WxQrcodeApiDto>(url, {
+        expire_seconds: 604800,
+        action_name: 'QR_STR_SCENE',
+        action_info: { scene: { scene_str: 'test' } },
+      }),
     );
     return data;
   }

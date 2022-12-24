@@ -11,3 +11,10 @@ export class WxCode2SessionApiDto {
   readonly errmsg: string;
   readonly errcode: number;
 }
+
+// https://developers.weixin.qq.com/doc/offiaccount/Account_Management/Generating_a_Parametric_QR_Code.html
+export class WxQrcodeApiDto {
+  readonly ticket: string;
+  readonly url: string;
+  readonly expire_seconds: number;
+}

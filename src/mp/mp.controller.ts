@@ -60,4 +60,10 @@ export class MpController {
     if (!xml) return '';
     return this.mpService.wxEvent(xml);
   }
+
+  /////////////////////////小程序/////////////////////////////
+  @Get('mini-qrcode')
+  miniQrCode() {
+    return this.mpService.mpMiniQrcode();
+  }
 }

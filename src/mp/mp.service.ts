@@ -2,15 +2,13 @@ import { Injectable, Inject /* CACHE_MANAGER */ } from '@nestjs/common';
 import { ConfigType /* ConfigService */ } from '@nestjs/config';
 import { UtilsService } from '../utils/services/utils.service';
 // import { Cache } from 'cache-manager';
-import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
+// import { HttpService } from '@nestjs/axios';
 import { UsersService } from '../users/users.service';
+import { MiniSdkService } from '../mini-sdk/mini-sdk.service';
 
 import {
   WxCheckSignatureDto,
   WxSubscribeEventDto,
-  WxTokenApiDto,
-  WxQrcodeApiDto,
   // WxLoginQrcodeDto,
 } from './dtos/wx-check-signature.dto';
 
@@ -20,11 +18,12 @@ import { config } from '../config';
 export class MpService {
   constructor(
     // private readonly allConfig: ConfigService,
-    @Inject(config.KEY) private readonly appConfig: ConfigType<typeof config>,
     // @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    // private readonly httpService: HttpService,
+    @Inject(config.KEY) private readonly appConfig: ConfigType<typeof config>,
     private readonly utilsService: UtilsService,
-    private readonly httpService: HttpService,
     private readonly usersService: UsersService,
+    private readonly miniSdkService: MiniSdkService,
   ) {}
 
   login() {
@@ -52,40 +51,10 @@ export class MpService {
     return 'success';
   }
 
-  //获取临时token
-  async getWxAccessToken() {
-    const { weixinApiTokenUrl, weixinAppSecret, weixinAppId } =
-      this.appConfig.params;
-    const url = this.utilsService.sprintf(weixinApiTokenUrl, [
-      weixinAppId,
-      weixinAppSecret,
-    ]);
-
-    const {
-      data: { /*  expires_in, */ access_token },
-    } = await firstValueFrom(this.httpService.get<WxTokenApiDto>(url));
-    return access_token;
-  }
-
-  //获取临时二维码
-  async getQrCode() {
-    const token = await this.getWxAccessToken();
-    const url = this.utilsService.sprintf(
-      this.appConfig.params.weixinApiQrCodeUrl,
-      [token],
-    );
-    const { data } = await firstValueFrom(
-      this.httpService.post<WxQrcodeApiDto>(url, {
-        expire_seconds: 604800,
-        action_name: 'QR_STR_SCENE',
-        action_info: { scene: { scene_str: 'test' } },
-      }),
-    );
-    return data;
-  }
-
+  // 获取公众号临时二维码
   async mpQrcode() {
-    const { ticket, expire_seconds /* , url */ } = await this.getQrCode();
+    const { ticket, expire_seconds /* , url */ } =
+      await this.miniSdkService.getMpQrCode();
     const salt = this.appConfig.params.weixinLoginSalt;
     const sessionKey = this.utilsService.getSha1(ticket + salt);
     const qrcodeUrl = this.utilsService.sprintf(
@@ -98,5 +67,10 @@ export class MpService {
       heartBeat: 5,
       url: qrcodeUrl,
     };
+  }
+
+  // 获取小程序 小程序码
+  async mpMiniQrcode() {
+    //
   }
 }
