@@ -90,12 +90,18 @@ export class MiniSdkService {
       [access_token],
     );
     const { data } = await firstValueFrom(
-      this.httpService.post<WxMiniQrcodeApiDto>(url, {
-        scene,
-        env_version: env || 'develop',
-        check_path: false,
-        page: 'pages/index/index',
-      }),
+      this.httpService.post<WxMiniQrcodeApiDto>(
+        url,
+        {
+          scene,
+          env_version: env || 'develop',
+          check_path: false,
+          page: 'pages/index/index',
+        },
+        {
+          responseType: 'arraybuffer',
+        },
+      ),
     );
     return data;
   }

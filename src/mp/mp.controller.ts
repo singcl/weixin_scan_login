@@ -66,6 +66,6 @@ export class MpController {
   @Get('mini-qrcode')
   async miniQrCode(@Response() res) {
     const data = await this.mpService.mpMiniQrcode();
-    res.type('jpeg').send(data);
+    res.type('png').send(data);
   }
 }
