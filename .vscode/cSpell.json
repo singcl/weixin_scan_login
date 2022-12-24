@@ -2,6 +2,8 @@
     "words": [
         "dtos",
         "echostr",
+        "errcode",
+        "errmsg",
         "FRPS",
         "IMCOCO",
         "importmap",
@@ -11,6 +13,7 @@
         "SERV",
         "sprintf",
         "typeorm",
+        "unionid",
         "uuidv",
         "vicons",
         "wechat",
