@@ -9,6 +9,7 @@ import { config, /*  environments, */ validationSchema } from './config';
 import { User } from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { MpModule } from './mp/mp.module';
+import { MiniSdkModule } from './mini-sdk/mini-sdk.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { MpModule } from './mp/mp.module';
     }),
     AuthModule,
     MpModule,
+    MiniSdkModule,
   ],
   controllers: [AppController],
   providers: [AppService],

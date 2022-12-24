@@ -26,7 +26,11 @@ export default registerAs('config', () => ({
     weixinApiTokenUrl: process.env.WX_API_TOKEN_URL,
     weixinApiQrCodeUrl: process.env.WX_API_QRCODE_URL,
     weixinMpQrCodeUrl: process.env.WX_MP_QRCODE_URL,
+    weixinMpCode2SessionUrl: process.env.WX_MP_CODE2SESSION_URL,
     weixinLoginSalt: process.env.WX_LOGIN_SALT,
+    //
+    miniAppId: process.env.MINI_APP_ID,
+    miniAppSecret: process.env.MINI_APP_SECRET,
   },
   services: {
     nestJsDocs: {
