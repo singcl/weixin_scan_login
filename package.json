@@ -66,6 +66,7 @@
     "@types/node": "^16.0.0",
     "@types/passport-local": "^1.0.34",
     "@types/supertest": "^2.0.11",
+    "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "eslint": "^8.0.1",
@@ -98,5 +99,7 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   },
-  "engines" : { "node" : ">=16" }
+  "engines": {
+    "node": ">=16"
+  }
 }

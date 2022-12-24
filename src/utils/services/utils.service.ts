@@ -61,4 +61,8 @@ export class UtilsService {
     hash.update(uuidv4());
     return hash.digest('hex');
   }
+
+  genUuidToken() {
+    return uuidv4().replace(/-/g, '').toLowerCase();
+  }
 }

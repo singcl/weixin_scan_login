@@ -71,6 +71,9 @@ export class MpService {
 
   // 获取小程序 小程序码
   async mpMiniQrcode() {
-    //
+    const scene = this.utilsService.genUuidToken();
+    const data: any = await this.miniSdkService.getMpMiniQrCode(scene);
+    // console.log('-----data:' , Buffer.from(data, 'binary').toString('utf-8'))
+    return data;
   }
 }

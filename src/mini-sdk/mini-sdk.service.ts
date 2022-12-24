@@ -10,6 +10,7 @@ import {
   WxCode2SessionApiDto,
   WxQrcodeApiDto,
 } from './dtos/mini-sdk.dto';
+import { WxMiniQrcodeApiDto } from './interfaces/mini-skd.interface';
 
 @Injectable()
 export class MiniSdkService {
@@ -18,7 +19,7 @@ export class MiniSdkService {
     @Inject(config.KEY) private readonly appConfig: ConfigType<typeof config>,
     private readonly httpService: HttpService,
   ) {}
-  //获取临时token
+  // 小程序获取临时token
   async getMiniAccessToken() {
     const { weixinApiTokenUrl, miniAppId, miniAppSecret } =
       this.appConfig.params;
@@ -75,6 +76,25 @@ export class MiniSdkService {
         expire_seconds: 604800,
         action_name: 'QR_STR_SCENE',
         action_info: { scene: { scene_str: 'test' } },
+      }),
+    );
+    return data;
+  }
+
+  // 获取小程序临时小程序码
+  // @see https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/qr-code/getUnlimitedQRCode.html#%E8%B0%83%E7%94%A8%E6%96%B9%E5%BC%8F
+  async getMpMiniQrCode(scene: string, env?: 'release' | 'trial' | 'develop') {
+    const { access_token } = await this.getMiniAccessToken();
+    const url = this.utilsService.sprintf(
+      this.appConfig.params.weixinMpMiniQrcodeUrl,
+      [access_token],
+    );
+    const { data } = await firstValueFrom(
+      this.httpService.post<WxMiniQrcodeApiDto>(url, {
+        scene,
+        env_version: env || 'develop',
+        check_path: false,
+        page: 'pages/index/index',
       }),
     );
     return data;

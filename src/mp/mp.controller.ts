@@ -8,6 +8,7 @@ import {
   Render,
   UseGuards,
   Request,
+  Response,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { MpService } from './mp.service';
@@ -63,7 +64,8 @@ export class MpController {
 
   /////////////////////////小程序/////////////////////////////
   @Get('mini-qrcode')
-  miniQrCode() {
-    return this.mpService.mpMiniQrcode();
+  async miniQrCode(@Response() res) {
+    const data = await this.mpService.mpMiniQrcode();
+    res.type('jpeg').send(data);
   }
 }
