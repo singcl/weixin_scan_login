@@ -73,7 +73,7 @@ export default defineComponent((props, { emit }) => {
             'div',
             {
               class:
-                'rounded-md my-4 p-4 relative overflow-hidden bg-transparent w-[208px] h-[208px] border border-solid border-slate-200',
+                'rounded-md my-4 p-4 relative overflow-hidden bg-transparent w-[208px] h-[208px] border border-solid border-transparent',
             },
             [
               miniQrcode.value
