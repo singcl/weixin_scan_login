@@ -11,6 +11,7 @@ import {
   Response,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import type { Response as ExpressResponse } from 'express';
 import { MpService } from './mp.service';
 import {
   WxCheckSignatureDto,
@@ -64,7 +65,7 @@ export class MpController {
 
   /////////////////////////小程序/////////////////////////////
   @Get('mini-qrcode')
-  async miniQrCode(@Response() res) {
+  async miniQrCode(@Response() res: ExpressResponse) {
     const data = await this.mpService.mpMiniQrcode();
     res.type('png').send(data);
   }
