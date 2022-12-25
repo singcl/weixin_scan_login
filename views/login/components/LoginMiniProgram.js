@@ -9,6 +9,7 @@ export default defineComponent((props, { emit }) => {
     const sessionKey = await getMiniToken();
     miniToken.value = sessionKey;
     miniQrcode.value = `/mp/mini-qrcode/${sessionKey}`;
+    checkRetry(sessionKey, 5);
   });
   onBeforeUnmount(() => {
     clearTimeout(timer.value);
@@ -25,29 +26,33 @@ export default defineComponent((props, { emit }) => {
     return data.sessionKey;
   }
 
-  // async function checkLogin(sessionKey) {
-  //   const response = await fetch(`/mp/qrcode/check?sessionKey=${sessionKey}`, {
-  //     headers: {
-  //       WxToken: localStorage.getItem('WxToken'),
-  //     },
-  //   });
-  //   const data = await response.json();
-  //   return data;
-  // }
+  async function checkLogin(sessionKey) {
+    const response = await fetch(
+      `/mp/mini/scan/check?sessionKey=${sessionKey}`,
+      {
+        headers: {
+          WxToken: localStorage.getItem('WxToken'),
+        },
+      },
+    );
+    const data = await response.json();
+    return data;
+  }
 
-  // async function checkRetry(sessionKey, heartBeat) {
-  //   const data = await checkLogin(sessionKey);
-  //   if (data.success) {
-  //     clearTimeout(timer.value);
-  //     localStorage.setItem('WxToken', data.token);
-  //     location.href = `/?ticket=${data.token}`;
-  //     return;
-  //   }
-  //   timer.value = setTimeout(
-  //     () => checkRetry(sessionKey, heartBeat),
-  //     heartBeat * 1000,
-  //   );
-  // }
+  async function checkRetry(sessionKey, heartBeat) {
+    const data = await checkLogin(sessionKey);
+    const token = data.data && data.data.token;
+    if (data.success && token) {
+      clearTimeout(timer.value);
+      localStorage.setItem('WxToken', token);
+      location.href = `/?ticket=${token}`;
+      return;
+    }
+    timer.value = setTimeout(
+      () => checkRetry(sessionKey, heartBeat),
+      heartBeat * 1000,
+    );
+  }
 
   function handleLoginGzh() {
     //

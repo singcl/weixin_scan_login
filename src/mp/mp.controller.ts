@@ -90,4 +90,20 @@ export class MpController {
   async miniProgramLogin(@Query('code') code: string) {
     return this.mpService.mpMiniProgramLogin(code);
   }
+
+  // 微信小程序登录Confirm
+  @UseGuards(AuthGuard('checkToken'))
+  @Get('mini/scan/confirm')
+  async miniProgramScanConform(
+    @Request() req: Record<any, any>,
+    @Query('sc') sc: string,
+  ) {
+    return this.mpService.mpMiniProgramScanConform(sc, req.user);
+  }
+
+  // 微信小程序登录Check
+  @Get('mini/scan/check')
+  async miniProgramScanCheck(@Query('sessionKey') sessionKey: string) {
+    return this.mpService.mpMiniProgramScanCheck(sessionKey);
+  }
 }

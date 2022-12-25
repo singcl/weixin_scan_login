@@ -18,6 +18,7 @@
         "uuidv",
         "vicons",
         "wechat",
-        "weixin"
+        "weixin",
+        "wxtoken"
     ]
 }

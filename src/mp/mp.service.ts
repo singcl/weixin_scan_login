@@ -150,4 +150,100 @@ export class MpService {
       },
     };
   }
+
+  // 微信小程序确认Confirm
+  async mpMiniProgramScanConform(sc: string, user: Record<string, any>) {
+    await this.cacheManager.set(sc, user.openid, 10 * 1000);
+    return {
+      code: 0,
+      msg: '确认登录成功',
+      success: true,
+    };
+  }
+  // 微信小程序确认Check
+  // TODO: 1. 重复登录 2. 已经登录不再发起请求的情况 3. 这里的逻辑移动到其他合理的模块
+  async mpMiniProgramScanCheck(sessionKey: string) {
+    const salt = this.appConfig.params.weixinLoginMiniSceneSalt;
+    const scene = this.utilsService.getMd5(sessionKey + salt);
+
+    if (!sessionKey) {
+      return {
+        code: -1,
+        msg: '缺少参数',
+        success: false,
+      };
+    }
+    const openid: string = await this.cacheManager.get(scene);
+    if (!openid) {
+      return {
+        code: 0,
+        msg: '登录中...',
+        success: true,
+      };
+    }
+
+    const res = await this.usersService.findOneByOpenId(openid);
+    if (!res) {
+      return {
+        code: -3,
+        msg: '登录失败',
+        success: false,
+      };
+    }
+    const openidKey = `wechat:login_openid:${openid}`;
+
+    const token = this.utilsService.genRandomToken(openid, salt);
+    const ttl = 30 * 60 * 1000;
+    const tokenKey = `wechat:login_user:${token}`;
+    const userInfo: Record<string, any> | null = await this.cacheManager.get(
+      openidKey,
+    );
+    if (userInfo) {
+      const loginTokenList: string[] = userInfo.loginTokenList || [];
+      const loginTokenList2: string[] = [];
+      for (let i = 0; i < loginTokenList.length; i++) {
+        const tkKey = loginTokenList[i];
+        const oId = await this.cacheManager.get(tkKey);
+        if (oId) {
+          loginTokenList2.push(tkKey);
+        }
+      }
+      if (loginTokenList2.length >= 3) {
+        return {
+          success: false,
+          token: null,
+          message: '同一个账号最多在3台设备上登录',
+        };
+      }
+      userInfo.loginTokenList = loginTokenList2;
+      await this.cacheManager.set(
+        openidKey,
+        {
+          ...userInfo,
+          loginTokenList: [...loginTokenList2, tokenKey],
+        },
+        ttl,
+      );
+    } else {
+      await this.cacheManager.set(
+        openidKey,
+        {
+          ...res,
+          loginTokenList: [tokenKey],
+        },
+        ttl,
+      );
+    }
+    //
+    await this.cacheManager.set(tokenKey, openidKey, ttl);
+    await this.cacheManager.del(scene);
+    return {
+      code: 0,
+      msg: '确认登录成功',
+      success: true,
+      data: {
+        token,
+      },
+    };
+  }
 }
