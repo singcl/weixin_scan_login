@@ -94,7 +94,7 @@ export class MiniSdkService {
         url,
         {
           scene,
-          env_version: env || 'develop',
+          env_version: env || 'trial',
           check_path: false,
           page: 'pages/index/index',
         },
