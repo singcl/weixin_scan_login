@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Query,
+  Param,
   Post,
   Body,
   HttpCode,
@@ -64,9 +65,23 @@ export class MpController {
   }
 
   /////////////////////////小程序/////////////////////////////
-  @Get('mini-qrcode')
-  async miniQrCode(@Response() res: ExpressResponse) {
-    const data = await this.mpService.mpMiniQrcode();
+  @Get('mini-qrcode/:ticket')
+  async miniQrCode(
+    @Response() res: ExpressResponse,
+    @Param('ticket') ticket?: string,
+  ) {
+    if (!ticket) {
+      return {
+        success: false,
+        message: '缺少参数',
+      };
+    }
+    const data = await this.mpService.mpMiniQrcode(ticket);
     res.type('png').send(data);
+  }
+
+  @Get('mini-token')
+  miniToken() {
+    return this.mpService.mpMiniToken();
   }
 }

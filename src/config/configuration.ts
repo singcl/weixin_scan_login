@@ -29,6 +29,7 @@ export default registerAs('config', () => ({
     weixinMpCode2SessionUrl: process.env.WX_MP_CODE2SESSION_URL,
     weixinMpMiniQrcodeUrl: process.env.MINI_MP_QRCODE_URL,
     weixinLoginSalt: process.env.WX_LOGIN_SALT,
+    weixinLoginMiniSceneSalt: process.env.MINI_LOGIN_SCENE_SALT,
     //
     miniAppId: process.env.MINI_APP_ID,
     miniAppSecret: process.env.MINI_APP_SECRET,

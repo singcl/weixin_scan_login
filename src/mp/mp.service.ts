@@ -70,9 +70,19 @@ export class MpService {
   }
 
   // 获取小程序 小程序码
-  async mpMiniQrcode() {
-    const scene = this.utilsService.genUuidToken();
-    const data: any = await this.miniSdkService.getMpMiniQrCode(scene);
+  async mpMiniQrcode(ticket: string) {
+    const salt = this.appConfig.params.weixinLoginMiniSceneSalt;
+    const scene = this.utilsService.getMd5(ticket + salt);
+    const data = await this.miniSdkService.getMpMiniQrCode(scene);
     return data;
+  }
+
+  // 获取小程序登录临时token
+  mpMiniToken() {
+    const sessionKey = this.utilsService.genUuidToken();
+    return {
+      sessionKey,
+      success: true,
+    };
   }
 }
