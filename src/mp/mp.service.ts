@@ -113,7 +113,7 @@ export class MpService {
           loginTokenList2.push(tkKey);
         }
       }
-      if (loginTokenList2.length >= 3) {
+      if (loginTokenList2.length >= 5) {
         return {
           code: -1,
           msg: '同一个账号最多在3台设备上登录',
@@ -208,7 +208,7 @@ export class MpService {
           loginTokenList2.push(tkKey);
         }
       }
-      if (loginTokenList2.length >= 3) {
+      if (loginTokenList2.length >= 5) {
         return {
           success: false,
           token: null,

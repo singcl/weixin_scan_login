@@ -106,7 +106,7 @@ export class AuthService {
           loginTokenList2.push(tkKey);
         }
       }
-      if (loginTokenList2.length >= 3) {
+      if (loginTokenList2.length >= 5) {
         return {
           success: false,
           token: null,
