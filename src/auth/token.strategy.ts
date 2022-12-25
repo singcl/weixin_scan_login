@@ -7,6 +7,7 @@ import { AuthService } from './auth.service';
 export class TokenStrategy extends PassportStrategy(Strategy, 'checkToken') {
   constructor(private readonly authService: AuthService) {
     super({
+      headerFields: ['wxtoken'], // 自动格式化为小写
       tokenFields: ['token', 'ticket'],
       params: true,
     });
