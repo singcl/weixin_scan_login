@@ -1,6 +1,6 @@
 import { h, defineComponent, onMounted, onBeforeUnmount, ref } from 'vue';
 import naive from 'naive';
-import Wechat from '@vicons/ionicons5/Wechat.js';
+import WeChat from '@vicons/ionicons5/WeChat.js';
 import ReloadCircle from '@vicons/ionicons5/ReloadCircle.js';
 //
 export default defineComponent((props, { emit }) => {
@@ -115,7 +115,7 @@ export default defineComponent((props, { emit }) => {
                   onClick: handleLoginGzh,
                 },
                 [
-                  h(naive.NIcon, { size: 24, class: 'mr-1' }, () => h(Wechat)),
+                  h(naive.NIcon, { size: 24, class: 'mr-1' }, () => h(WeChat)),
                   '微信公众号登录',
                 ],
               ),
