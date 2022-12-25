@@ -84,4 +84,10 @@ export class MpController {
   miniToken() {
     return this.mpService.mpMiniToken();
   }
+
+  // 微信小程序登录
+  @Get('mini/login')
+  async miniProgramLogin(@Query('code') code: string) {
+    return this.mpService.mpMiniProgramLogin(code);
+  }
 }

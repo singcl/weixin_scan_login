@@ -1,7 +1,7 @@
-import { Injectable, Inject /* CACHE_MANAGER */ } from '@nestjs/common';
+import { Injectable, Inject, CACHE_MANAGER } from '@nestjs/common';
 import { ConfigType /* ConfigService */ } from '@nestjs/config';
 import { UtilsService } from '../utils/services/utils.service';
-// import { Cache } from 'cache-manager';
+import { Cache } from 'cache-manager';
 // import { HttpService } from '@nestjs/axios';
 import { UsersService } from '../users/users.service';
 import { MiniSdkService } from '../mini-sdk/mini-sdk.service';
@@ -18,7 +18,7 @@ import { config } from '../config';
 export class MpService {
   constructor(
     // private readonly allConfig: ConfigService,
-    // @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     // private readonly httpService: HttpService,
     @Inject(config.KEY) private readonly appConfig: ConfigType<typeof config>,
     private readonly utilsService: UtilsService,
@@ -46,7 +46,8 @@ export class MpService {
     console.log(`用户${openid}: ${event || msgType}`);
     if (['subscribe', 'SCAN'].includes(event)) {
       const ticket = Ticket && Ticket[0].trim();
-      await this.usersService.createWxUser(openid, ticket);
+      await this.usersService.createWxUser(openid);
+      await this.usersService.saveTempWxUser(openid, ticket);
     }
     return 'success';
   }
@@ -83,6 +84,70 @@ export class MpService {
     return {
       sessionKey,
       success: true,
+    };
+  }
+
+  // 小程序登录
+  // TODO: 1. 重复登录 2. 已经登录不再发起请求的情况 3. 这里的逻辑移动到其他合理的模块
+  async mpMiniProgramLogin(code: string) {
+    const { session_key, openid } = await this.miniSdkService.miniCode2Session(
+      code,
+    );
+    const res = await this.usersService.createWxUser(openid);
+    //
+    const openidKey = `wechat:login_openid:${openid}`;
+    const salt = this.appConfig.params.weixinLoginSalt;
+    const token = this.utilsService.genRandomToken(openid, salt);
+    const ttl = 30 * 60 * 1000;
+    const tokenKey = `wechat:login_user:${token}`;
+    const userInfo: Record<string, any> | null = await this.cacheManager.get(
+      openidKey,
+    );
+    if (userInfo) {
+      const loginTokenList: string[] = userInfo.loginTokenList || [];
+      const loginTokenList2: string[] = [];
+      for (let i = 0; i < loginTokenList.length; i++) {
+        const tkKey = loginTokenList[i];
+        const oId = await this.cacheManager.get(tkKey);
+        if (oId) {
+          loginTokenList2.push(tkKey);
+        }
+      }
+      if (loginTokenList2.length >= 3) {
+        return {
+          code: -1,
+          msg: '同一个账号最多在3台设备上登录',
+          success: false,
+        };
+      }
+      userInfo.loginTokenList = loginTokenList2;
+      await this.cacheManager.set(
+        openidKey,
+        {
+          ...userInfo,
+          loginTokenList: [...loginTokenList2, tokenKey],
+        },
+        ttl,
+      );
+    } else {
+      await this.cacheManager.set(
+        openidKey,
+        {
+          ...res,
+          loginTokenList: [tokenKey],
+        },
+        ttl,
+      );
+    }
+    //
+    await this.cacheManager.set(tokenKey, openidKey, ttl);
+    return {
+      code: 0,
+      msg: '登录成功',
+      success: true,
+      data: {
+        token: token,
+      },
     };
   }
 }

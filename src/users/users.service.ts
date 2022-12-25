@@ -26,7 +26,8 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async createWxUser(openid: string, ticket: string) {
+  // 创建用户
+  async createWxUser(openid: string) {
     let res = await this.findOneByOpenId(openid);
     //
     if (!res) {
@@ -36,10 +37,14 @@ export class UsersService {
       user.nickname = `微信用户${this.utilsService.getRandomStr()}`;
       res = await this.save(user);
     }
+    return res;
+  }
 
+  // 临时保存登录用户
+  async saveTempWxUser(openid: string, ticket: string) {
     const salt = this.appConfig.params.weixinLoginSalt;
     const sessionKey = this.utilsService.getSha1(ticket + salt);
     await this.cacheManager.set(sessionKey, openid, 10 * 1000);
-    return res;
+    return;
   }
 }
