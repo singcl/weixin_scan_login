@@ -1,8 +1,24 @@
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, ref } from 'vue';
 import LoginGzh from './components/LoginGzh.js';
+import LoginMiniProgram from './components/LoginMiniProgram.js';
 
 // App
 export default defineComponent((props, { emit }) => {
+  const loginType = ref('gzh');
+  function changeLoginType(v) {
+    loginType.value = v;
+  }
+  function loginTypeRender() {
+    switch (loginType.value) {
+      case 'mini':
+        return h(LoginMiniProgram, { onChange: changeLoginType });
+      case 'gzh':
+      default:
+        return h(LoginGzh, {
+          onChange: changeLoginType,
+        });
+    }
+  }
   return () =>
     h(
       'div',
@@ -20,7 +36,7 @@ export default defineComponent((props, { emit }) => {
                 h(
                   'div',
                   { class: 'flex flex-col items-center justify-center p-6' },
-                  [h(LoginGzh)],
+                  [h(loginTypeRender())],
                 ),
               ]),
             ],
