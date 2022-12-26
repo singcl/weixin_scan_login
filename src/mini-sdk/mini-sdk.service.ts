@@ -83,7 +83,7 @@ export class MiniSdkService {
 
   // 获取小程序临时小程序码
   // @see https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/qr-code/getUnlimitedQRCode.html#%E8%B0%83%E7%94%A8%E6%96%B9%E5%BC%8F
-  async getMpMiniQrCode(scene: string, env?: 'release' | 'trial' | 'develop') {
+  async getMpMiniQrCode(scene: string, env?: string) {
     const { access_token } = await this.getMiniAccessToken();
     const url = this.utilsService.sprintf(
       this.appConfig.params.weixinMpMiniQrcodeUrl,
@@ -94,7 +94,10 @@ export class MiniSdkService {
         url,
         {
           scene,
-          env_version: env || 'trial',
+          // 'release' | 'trial' | 'develop'
+          env_version: ['release', 'trial', 'develop'].includes(env)
+            ? env
+            : 'trial',
           check_path: false,
           page: 'pages/index/index',
         },

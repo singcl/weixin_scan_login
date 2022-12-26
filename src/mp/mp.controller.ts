@@ -69,6 +69,7 @@ export class MpController {
   async miniQrCode(
     @Response() res: ExpressResponse,
     @Param('ticket') ticket?: string,
+    @Query('env') env?: string,
   ) {
     if (!ticket) {
       return {
@@ -76,7 +77,7 @@ export class MpController {
         message: '缺少参数',
       };
     }
-    const data = await this.mpService.mpMiniQrcode(ticket);
+    const data = await this.mpService.mpMiniQrcode(ticket, env);
     res.type('png').send(data);
   }
 

@@ -110,7 +110,7 @@ export class AuthService {
         return {
           success: false,
           token: null,
-          message: '同一个账号最多在3台设备上登录',
+          message: '同一个账号最多在5台设备上登录',
         };
       }
       userInfo.loginTokenList = loginTokenList2;

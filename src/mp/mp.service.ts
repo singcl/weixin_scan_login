@@ -71,10 +71,10 @@ export class MpService {
   }
 
   // 获取小程序 小程序码
-  async mpMiniQrcode(ticket: string) {
+  async mpMiniQrcode(ticket: string, env?: string) {
     const salt = this.appConfig.params.weixinLoginMiniSceneSalt;
     const scene = this.utilsService.getMd5(ticket + salt);
-    const data = await this.miniSdkService.getMpMiniQrCode(scene);
+    const data = await this.miniSdkService.getMpMiniQrCode(scene, env);
     return data;
   }
 
@@ -116,7 +116,7 @@ export class MpService {
       if (loginTokenList2.length >= 5) {
         return {
           code: -1,
-          msg: '同一个账号最多在3台设备上登录',
+          msg: '同一个账号最多在5台设备上登录',
           success: false,
         };
       }
@@ -212,7 +212,7 @@ export class MpService {
         return {
           success: false,
           token: null,
-          message: '同一个账号最多在3台设备上登录',
+          message: '同一个账号最多在5台设备上登录',
         };
       }
       userInfo.loginTokenList = loginTokenList2;
