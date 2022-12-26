@@ -4,7 +4,7 @@ import LoginMiniProgram from './components/LoginMiniProgram.js';
 
 // App
 export default defineComponent((props, { emit }) => {
-  const loginType = ref('gzh');
+  const loginType = ref('mini');
   function changeLoginType(v) {
     loginType.value = v;
   }
