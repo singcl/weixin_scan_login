@@ -12,6 +12,7 @@
         "nestjs",
         "Qrcode",
         "SERV",
+        "singcl",
         "sprintf",
         "typeorm",
         "unionid",
