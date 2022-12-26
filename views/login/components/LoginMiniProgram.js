@@ -1,7 +1,7 @@
 import { h, defineComponent, onMounted, onBeforeUnmount, ref } from 'vue';
 import naive from 'naive';
-import WeChat from '@vicons/ionicons5/WeChat.js';
-import ReloadCircle from '@vicons/ionicons5/ReloadCircle.js';
+import WeChat from '@vicons/ionicons5/WeChat.min.js';
+import ReloadCircle from '@vicons/ionicons5/ReloadCircle.min.js';
 //
 export default defineComponent((props, { emit }) => {
   //
