@@ -146,7 +146,11 @@ export class AuthService {
     const openidKey: string | null = await this.cacheManager.get(
       `wechat:login_user:${token}`,
     );
-    if (!openidKey) throw new UnauthorizedException();
+    if (!openidKey)
+      throw new UnauthorizedException({
+        code: 60103,
+        msg: '登陆已经过期',
+      });
     const user = await this.cacheManager.get(openidKey);
     if (!user) throw new UnauthorizedException();
     const ttl = 30 * 60 * 1000;
