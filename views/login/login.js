@@ -23,8 +23,8 @@ export default defineComponent((props, { emit }) => {
     h(
       'div',
       {
-        class:
-          'flex flex-col justify-center h-screen bg-cover bg-[url("https://cdn.apifox.cn/mirror-www/web/static/bg-texture.c61f6dbd.svg")]',
+        // bg-[url("https://cdn.apifox.cn/mirror-www/web/static/bg-texture.c61f6dbd.svg")]
+        class: 'flex flex-col justify-center h-screen bg-cover bg-slate-100',
       },
       [
         h('div', null, [
