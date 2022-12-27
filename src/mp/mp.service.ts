@@ -5,6 +5,7 @@ import { Cache } from 'cache-manager';
 // import { HttpService } from '@nestjs/axios';
 import { UsersService } from '../users/users.service';
 import { MiniSdkService } from '../mini-sdk/mini-sdk.service';
+import { CodeService } from '../code/code.service';
 
 import {
   WxCheckSignatureDto,
@@ -24,6 +25,7 @@ export class MpService {
     private readonly utilsService: UtilsService,
     private readonly usersService: UsersService,
     private readonly miniSdkService: MiniSdkService,
+    private readonly codeService: CodeService,
   ) {}
 
   login() {
@@ -114,11 +116,7 @@ export class MpService {
         }
       }
       if (loginTokenList2.length >= 5) {
-        return {
-          code: -1,
-          msg: '同一个账号最多在5台设备上登录',
-          success: false,
-        };
+        return this.codeService.business('AuthLoginCountError');
       }
       userInfo.loginTokenList = loginTokenList2;
       await this.cacheManager.set(

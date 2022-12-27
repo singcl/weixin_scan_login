@@ -59,8 +59,6 @@ export enum ZhCNText {
   CronDetailError = '获取定时任务详情失败',
   CronExecuteError = '手动执行定时任务失败',
 
-  WeixinLoginError = '登录失败[微信]',
-  WeixinAuthorizationError = '鉴权信息错误[微信]',
-  WeixinAuthorizationExpiredError = '登录过期[微信]',
-  WeixinAvatarUploadError = '微信头像上传失败[微信]',
+  AuthLoginExpiredError = '登陆已过期',
+  AuthLoginCountError = '同一个账号登陆用户数超过上限',
 }

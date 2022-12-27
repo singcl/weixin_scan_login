@@ -59,8 +59,6 @@ export enum EnUSText {
   CronDetailError = 'Failed to get cron detail',
   CronExecuteError = 'Failed to execute cron',
 
-  WeixinLoginError = 'Failed to weixin login',
-  WeixinAuthorizationError = 'Failed to Auth access the api',
-  WeixinAuthorizationExpiredError = 'Failed to Auth, Login expired',
-  WeixinAvatarUploadError = 'Failed to upload avatar',
+  AuthLoginExpiredError = 'Failed to login expired',
+  AuthLoginCountError = 'Failed to more than login account number',
 }

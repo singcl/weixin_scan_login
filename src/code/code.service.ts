@@ -23,4 +23,11 @@ export class CodeService {
   text(key: keyof typeof Code) {
     return ZhCNText[key];
   }
+  business(key: keyof typeof Code, data?: unknown): Failure | Success {
+    return {
+      code: this.code(key),
+      msg: this.text(key),
+      data,
+    };
+  }
 }
