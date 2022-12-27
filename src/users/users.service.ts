@@ -76,10 +76,10 @@ export class UsersService {
     //
     const salt = this.appConfig.params.weixinLoginMiniSceneSalt;
     //
-    const openidKey = `wechat:login_openid:${openid}`;
+    const openidKey = `${this.appConfig.project.redisKeyPrefixLoginUserOpenid}${openid}`;
     const token = this.utilsService.genRandomToken(openid, salt);
     const ttl = 30 * 60 * 1000;
-    const tokenKey = `wechat:login_user:${token}`;
+    const tokenKey = `${this.appConfig.project.redisKeyPrefixLoginUserToken}${token}`;
     const userInfo: Record<string, any> | null = await this.cacheManager.get(
       openidKey,
     );

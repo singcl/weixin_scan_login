@@ -59,11 +59,18 @@ export class AuthService {
     // 如果有token, 更新当前用户token后直接返回
     if (cToken) {
       const openidKey: string | null = await this.cacheManager.get(
-        `wechat:login_user:${cToken}`,
+        `${this.appConfig.project.redisKeyPrefixLoginUserToken}${cToken}`,
       );
-      if (openidKey && openidKey === `wechat:login_openid:${openid}`) {
+      if (
+        openidKey &&
+        openidKey ===
+          `${this.appConfig.project.redisKeyPrefixLoginUserOpenid}${openid}`
+      ) {
         const ttl = 30 * 60 * 1000;
-        await this.updateRedisKeyTTL(`wechat:login_user:${cToken}`, ttl);
+        await this.updateRedisKeyTTL(
+          `${this.appConfig.project.redisKeyPrefixLoginUserToken}${cToken}`,
+          ttl,
+        );
         await this.updateRedisKeyTTL(openidKey, ttl);
         await this.cacheManager.del(scene);
         return this.codeService.business('Success', cToken);
@@ -79,7 +86,7 @@ export class AuthService {
   async validateToken(token?: string) {
     if (!token) throw new UnauthorizedException();
     const openidKey: string | null = await this.cacheManager.get(
-      `wechat:login_user:${token}`,
+      `${this.appConfig.project.redisKeyPrefixLoginUserToken}${token}`,
     );
     if (!openidKey)
       throw new UnauthorizedException(
@@ -91,7 +98,10 @@ export class AuthService {
         this.codeService.business('AuthLoginExpiredError'),
       );
     const ttl = 30 * 60 * 1000;
-    await this.updateRedisKeyTTL(`wechat:login_user:${token}`, ttl);
+    await this.updateRedisKeyTTL(
+      `${this.appConfig.project.redisKeyPrefixLoginUserToken}${token}`,
+      ttl,
+    );
     await this.updateRedisKeyTTL(openidKey, ttl);
     return user;
   }

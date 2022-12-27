@@ -3,6 +3,12 @@ import { registerAs } from '@nestjs/config';
 export default registerAs('config', () => ({
   project: {
     apiPrefix: process.env.API_PREFIX || 'API-PREFIX',
+    projectName: process.env.PROJECT_NAME,
+    headerLoginToken: process.env.HEADER_LOGIN_TOKEN || 'WxToken',
+    redisKeyPrefixLoginUserToken:
+      process.env.PROJECT_NAME + process.env.REDIS_KEY_PREFIX_LOGIN_USER_TOKEN,
+    redisKeyPrefixLoginUserOpenid:
+      process.env.PROJECT_NAME + process.env.REDIS_KEY_PREFIX_LOGIN_USER_OPENID,
   },
   server: {
     isProd: process.env.NODE_ENV === 'production',
