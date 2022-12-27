@@ -1,4 +1,6 @@
 export enum Code {
+  Success = 0,
+
   ServerError = 10101,
   TooManyRequests = 10102,
   ParamBindError = 10103,
@@ -62,4 +64,6 @@ export enum Code {
   //
   AuthLoginExpiredError = 20501,
   AuthLoginCountError = 20502,
+  AuthLoginParamRequiredError = 20503,
+  AuthLoginUserNotFoundError = 20504,
 }

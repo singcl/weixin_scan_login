@@ -1,4 +1,6 @@
 export enum ZhCNText {
+  Success = 'success',
+
   ServerError = '内部服务器错误',
   TooManyRequests = '请求过多',
   ParamBindError = '参数信息错误',
@@ -61,4 +63,6 @@ export enum ZhCNText {
 
   AuthLoginExpiredError = '登陆已过期',
   AuthLoginCountError = '同一个账号登陆用户数超过上限',
+  AuthLoginParamRequiredError = '缺少参数',
+  AuthLoginUserNotFoundError = '未找到用户',
 }

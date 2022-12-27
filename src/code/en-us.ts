@@ -1,4 +1,6 @@
 export enum EnUSText {
+  Success = 'success',
+
   ServerError = 'Internal server error',
   TooManyRequests = 'Too many requests',
   ParamBindError = 'Parameter error',
@@ -61,4 +63,6 @@ export enum EnUSText {
 
   AuthLoginExpiredError = 'Failed to login expired',
   AuthLoginCountError = 'Failed to more than login account number',
+  AuthLoginParamRequiredError = 'params required',
+  AuthLoginUserNotFoundError = 'login user not found',
 }

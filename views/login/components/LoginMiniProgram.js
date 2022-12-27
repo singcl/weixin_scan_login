@@ -23,7 +23,7 @@ export default defineComponent((props, { emit }) => {
   async function getMiniToken() {
     const response = await fetch('/mp/mini-token');
     const data = await response.json();
-    return data.sessionKey;
+    return data.data;
   }
 
   async function checkLogin(sessionKey) {
@@ -41,8 +41,8 @@ export default defineComponent((props, { emit }) => {
 
   async function checkRetry(sessionKey, heartBeat) {
     const data = await checkLogin(sessionKey);
-    const token = data.data && data.data.token;
-    if (data.success && token) {
+    const token = data.data;
+    if (data.code === 0 && token) {
       clearTimeout(timer.value);
       localStorage.setItem('WxToken', token);
       location.href = `/?ticket=${token}`;

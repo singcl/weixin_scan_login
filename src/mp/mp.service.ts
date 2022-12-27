@@ -83,10 +83,7 @@ export class MpService {
   // 获取小程序登录临时token
   mpMiniToken() {
     const sessionKey = this.utilsService.genUuidToken();
-    return {
-      sessionKey,
-      success: true,
-    };
+    return this.codeService.business('Success', sessionKey);
   }
 
   // 小程序登录
@@ -139,24 +136,13 @@ export class MpService {
     }
     //
     await this.cacheManager.set(tokenKey, openidKey, ttl);
-    return {
-      code: 0,
-      msg: '登录成功',
-      success: true,
-      data: {
-        token: token,
-      },
-    };
+    return this.codeService.business('Success', token);
   }
 
   // 微信小程序确认Confirm
   async mpMiniProgramScanConform(sc: string, user: Record<string, any>) {
     await this.cacheManager.set(sc, user.openid, 10 * 1000);
-    return {
-      code: 0,
-      msg: '确认登录成功',
-      success: true,
-    };
+    return this.codeService.business('Success');
   }
   // 微信小程序确认Check
   // TODO: 1. 重复登录 2. 已经登录不再发起请求的情况 3. 这里的逻辑移动到其他合理的模块
@@ -165,28 +151,16 @@ export class MpService {
     const scene = this.utilsService.getMd5(sessionKey + salt);
 
     if (!sessionKey) {
-      return {
-        code: -1,
-        msg: '缺少参数',
-        success: false,
-      };
+      return this.codeService.business('AuthLoginParamRequiredError');
     }
     const openid: string = await this.cacheManager.get(scene);
     if (!openid) {
-      return {
-        code: 0,
-        msg: '登录中...',
-        success: true,
-      };
+      return this.codeService.business('Success');
     }
 
     const res = await this.usersService.findOneByOpenId(openid);
     if (!res) {
-      return {
-        code: -3,
-        msg: '登录失败',
-        success: false,
-      };
+      return this.codeService.business('AuthLoginUserNotFoundError');
     }
     const openidKey = `wechat:login_openid:${openid}`;
 
@@ -207,11 +181,7 @@ export class MpService {
         }
       }
       if (loginTokenList2.length >= 5) {
-        return {
-          success: false,
-          token: null,
-          message: '同一个账号最多在5台设备上登录',
-        };
+        return this.codeService.business('AuthLoginCountError');
       }
       userInfo.loginTokenList = loginTokenList2;
       await this.cacheManager.set(
@@ -235,13 +205,6 @@ export class MpService {
     //
     await this.cacheManager.set(tokenKey, openidKey, ttl);
     await this.cacheManager.del(scene);
-    return {
-      code: 0,
-      msg: '确认登录成功',
-      success: true,
-      data: {
-        token,
-      },
-    };
+    return this.codeService.business('Success', token);
   }
 }
