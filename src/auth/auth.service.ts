@@ -59,7 +59,7 @@ export class AuthService {
       const openidKey: string | null = await this.cacheManager.get(
         `wechat:login_user:${cToken}`,
       );
-      if (openidKey) {
+      if (openidKey && openidKey === `wechat:login_openid:${openid}`) {
         const ttl = 30 * 60 * 1000;
         await this.updateRedisKeyTTL(`wechat:login_user:${cToken}`, ttl);
         await this.updateRedisKeyTTL(openidKey, ttl);
