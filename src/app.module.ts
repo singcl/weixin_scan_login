@@ -10,6 +10,7 @@ import { User } from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { MpModule } from './mp/mp.module';
 import { MiniSdkModule } from './mini-sdk/mini-sdk.module';
+import { CodeModule } from './code/code.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { MiniSdkModule } from './mini-sdk/mini-sdk.module';
     AuthModule,
     MpModule,
     MiniSdkModule,
+    CodeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
