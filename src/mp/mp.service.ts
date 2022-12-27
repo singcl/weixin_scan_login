@@ -98,58 +98,12 @@ export class MpService {
   }
 
   // 小程序登录
-  // TODO: 1. 重复登录 2. 已经登录不再发起请求的情况 3. 这里的逻辑移动到其他合理的模块
   async mpMiniProgramLogin(code: string) {
     const { session_key, openid } = await this.miniSdkService.miniCode2Session(
       code,
     );
     const res = await this.usersService.createWxUser(openid);
-    //
-    const openidKey = `wechat:login_openid:${openid}`;
-    const salt = this.appConfig.params.weixinLoginSalt;
-    const token = this.utilsService.genRandomToken(openid, salt);
-    const ttl = 30 * 60 * 1000;
-    const tokenKey = `wechat:login_user:${token}`;
-    const userInfo: Record<string, any> | null = await this.cacheManager.get(
-      openidKey,
-    );
-    if (userInfo) {
-      const loginTokenList: string[] = userInfo.loginTokenList || [];
-      const loginTokenList2: string[] = [];
-      for (let i = 0; i < loginTokenList.length; i++) {
-        const tkKey = loginTokenList[i];
-        const oId = await this.cacheManager.get(tkKey);
-        if (oId) {
-          loginTokenList2.push(tkKey);
-        }
-      }
-      if (loginTokenList2.length >= 5) {
-        throw new GoneException(
-          this.codeService.business('AuthLoginCountError'),
-        );
-      }
-      userInfo.loginTokenList = loginTokenList2;
-      await this.cacheManager.set(
-        openidKey,
-        {
-          ...userInfo,
-          loginTokenList: [...loginTokenList2, tokenKey],
-        },
-        ttl,
-      );
-    } else {
-      await this.cacheManager.set(
-        openidKey,
-        {
-          ...res,
-          loginTokenList: [tokenKey],
-        },
-        ttl,
-      );
-    }
-    //
-    await this.cacheManager.set(tokenKey, openidKey, ttl);
-    return this.codeService.business('Success', token);
+    return this.usersService.genUserSession(openid, res);
   }
 
   // 微信小程序确认Confirm
