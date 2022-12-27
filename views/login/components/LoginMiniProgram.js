@@ -41,8 +41,8 @@ export default defineComponent((props, { emit }) => {
 
   async function checkRetry(sessionKey, heartBeat) {
     const data = await checkLogin(sessionKey);
-    const token = data.data;
-    if (data.code === 0 && token) {
+    const { code, data: token } = data;
+    if (code === 0 && token) {
       clearTimeout(timer.value);
       localStorage.setItem('WxToken', token);
       location.href = `/?ticket=${token}`;

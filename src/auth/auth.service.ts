@@ -3,17 +3,20 @@ import {
   Inject,
   CACHE_MANAGER,
   UnauthorizedException,
+  GoneException,
 } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { ConfigType /* ConfigService */ } from '@nestjs/config';
 import { UtilsService } from './../utils/services/utils.service';
 import { UsersService } from './../users/users.service';
+import { CodeService } from './../code/code.service';
 
 import { config } from './../config';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly codeService: CodeService,
     private readonly usersService: UsersService,
     private readonly utilsService: UtilsService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
@@ -35,25 +38,20 @@ export class AuthService {
   ): Promise<any> {
     //
     if (!sessionKey) {
-      return {
-        success: false,
-        token: null,
-      };
+      throw new GoneException(
+        this.codeService.business('AuthLoginParamRequiredError'),
+      );
     }
     const openid: string = await this.cacheManager.get(sessionKey);
     if (!openid) {
-      return {
-        success: false,
-        token: null,
-      };
+      return this.codeService.business('Success');
     }
 
     const res = await this.usersService.findOneByOpenId(openid);
     if (!res) {
-      return {
-        success: false,
-        token: null,
-      };
+      throw new GoneException(
+        this.codeService.business('AuthLoginUserNotFoundError'),
+      );
     }
 
     // 如果有token, 更新当前用户token后直接返回
@@ -66,10 +64,7 @@ export class AuthService {
         await this.updateRedisKeyTTL(`wechat:login_user:${cToken}`, ttl);
         await this.updateRedisKeyTTL(openidKey, ttl);
         await this.cacheManager.del(sessionKey);
-        return {
-          success: true,
-          token: cToken,
-        };
+        return this.codeService.business('Success', cToken);
       }
     }
 
@@ -107,11 +102,9 @@ export class AuthService {
         }
       }
       if (loginTokenList2.length >= 5) {
-        return {
-          success: false,
-          token: null,
-          message: '同一个账号最多在5台设备上登录',
-        };
+        throw new GoneException(
+          this.codeService.business('AuthLoginCountError'),
+        );
       }
       userInfo.loginTokenList = loginTokenList2;
       await this.cacheManager.set(
@@ -135,10 +128,7 @@ export class AuthService {
     //
     await this.cacheManager.set(tokenKey, openidKey, ttl);
     await this.cacheManager.del(sessionKey);
-    return {
-      success: true,
-      token: token,
-    };
+    return this.codeService.business('Success', token);
   }
 
   async validateToken(token?: string) {
@@ -147,16 +137,14 @@ export class AuthService {
       `wechat:login_user:${token}`,
     );
     if (!openidKey)
-      throw new UnauthorizedException({
-        code: 60103,
-        msg: '登陆已经过期',
-      });
+      throw new UnauthorizedException(
+        this.codeService.business('AuthLoginExpiredError'),
+      );
     const user = await this.cacheManager.get(openidKey);
     if (!user)
-      throw new UnauthorizedException({
-        code: 60103,
-        msg: '登陆已经过期',
-      });
+      throw new UnauthorizedException(
+        this.codeService.business('AuthLoginExpiredError'),
+      );
     const ttl = 30 * 60 * 1000;
     await this.updateRedisKeyTTL(`wechat:login_user:${token}`, ttl);
     await this.updateRedisKeyTTL(openidKey, ttl);

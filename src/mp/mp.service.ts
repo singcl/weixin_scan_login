@@ -1,4 +1,9 @@
-import { Injectable, Inject, CACHE_MANAGER } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  CACHE_MANAGER,
+  GoneException,
+} from '@nestjs/common';
 import { ConfigType /* ConfigService */ } from '@nestjs/config';
 import type { Response as ExpressResponse } from 'express';
 import { UtilsService } from '../utils/services/utils.service';
@@ -65,18 +70,20 @@ export class MpService {
       this.appConfig.params.weixinMpQrCodeUrl,
       [ticket],
     );
-    return {
+    return this.codeService.business('Success', {
       sessionKey,
       expires: expire_seconds,
       heartBeat: 5,
       url: qrcodeUrl,
-    };
+    });
   }
 
   // 获取小程序 小程序码
   async mpMiniQrcode(res: ExpressResponse, ticket?: string, env?: string) {
     if (!ticket) {
-      return this.codeService.business('AuthLoginParamRequiredError');
+      throw new GoneException(
+        this.codeService.business('AuthLoginParamRequiredError'),
+      );
     }
     const salt = this.appConfig.params.weixinLoginMiniSceneSalt;
     const scene = this.utilsService.getMd5(ticket + salt);
@@ -117,7 +124,9 @@ export class MpService {
         }
       }
       if (loginTokenList2.length >= 5) {
-        return this.codeService.business('AuthLoginCountError');
+        throw new GoneException(
+          this.codeService.business('AuthLoginCountError'),
+        );
       }
       userInfo.loginTokenList = loginTokenList2;
       await this.cacheManager.set(
@@ -155,7 +164,9 @@ export class MpService {
     const scene = this.utilsService.getMd5(sessionKey + salt);
 
     if (!sessionKey) {
-      return this.codeService.business('AuthLoginParamRequiredError');
+      throw new GoneException(
+        this.codeService.business('AuthLoginParamRequiredError'),
+      );
     }
     const openid: string = await this.cacheManager.get(scene);
     if (!openid) {
@@ -164,7 +175,9 @@ export class MpService {
 
     const res = await this.usersService.findOneByOpenId(openid);
     if (!res) {
-      return this.codeService.business('AuthLoginUserNotFoundError');
+      throw new GoneException(
+        this.codeService.business('AuthLoginUserNotFoundError'),
+      );
     }
     const openidKey = `wechat:login_openid:${openid}`;
 
@@ -185,7 +198,9 @@ export class MpService {
         }
       }
       if (loginTokenList2.length >= 5) {
-        return this.codeService.business('AuthLoginCountError');
+        throw new GoneException(
+          this.codeService.business('AuthLoginCountError'),
+        );
       }
       userInfo.loginTokenList = loginTokenList2;
       await this.cacheManager.set(

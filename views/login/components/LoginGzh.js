@@ -30,7 +30,7 @@ export default defineComponent((props, { emit }) => {
   async function getQrcodeInfo() {
     const response = await fetch('/mp/qrcode');
     const data = await response.json();
-    return data;
+    return data.data;
   }
 
   async function checkLogin(sessionKey) {
@@ -45,10 +45,11 @@ export default defineComponent((props, { emit }) => {
 
   async function checkRetry(sessionKey, heartBeat) {
     const data = await checkLogin(sessionKey);
-    if (data.success) {
+    const { code, data: token } = data;
+    if (code === 0 && token) {
       clearTimeout(timer.value);
-      localStorage.setItem('WxToken', data.token);
-      location.href = `/?ticket=${data.token}`;
+      localStorage.setItem('WxToken', token);
+      location.href = `/?ticket=${token}`;
       return;
     }
     timer.value = setTimeout(
