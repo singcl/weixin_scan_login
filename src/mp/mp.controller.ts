@@ -41,9 +41,7 @@ export class MpController {
   //
   @UseGuards(AuthGuard('checkScan'))
   @Get('qrcode/check')
-  async mpQrcodeCheck(
-    /* @Query() query: { sessionKey?: string } */ @Request() req,
-  ) {
+  async mpQrcodeCheck(@Request() req) {
     return req.user;
   }
 
@@ -96,14 +94,9 @@ export class MpController {
   }
 
   // 微信小程序登录Check
+  @UseGuards(AuthGuard('checkScan'))
   @Get('mini/scan/check')
-  async miniProgramScanCheck(
-    @Request() req,
-    @Query('sessionKey') sessionKey: string,
-  ) {
-    return this.mpService.mpMiniProgramScanCheck(
-      sessionKey,
-      req.header('WxToken'),
-    );
+  async miniProgramScanCheck(@Request() req) {
+    return req.user;
   }
 }

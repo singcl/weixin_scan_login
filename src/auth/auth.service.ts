@@ -42,7 +42,9 @@ export class AuthService {
         this.codeService.business('AuthLoginParamRequiredError'),
       );
     }
-    const openid: string = await this.cacheManager.get(sessionKey);
+    const salt = this.appConfig.params.weixinLoginMiniSceneSalt;
+    const scene = this.utilsService.getMd5(sessionKey + salt);
+    const openid: string = await this.cacheManager.get(scene);
     if (!openid) {
       return this.codeService.business('Success');
     }
@@ -63,7 +65,7 @@ export class AuthService {
         const ttl = 30 * 60 * 1000;
         await this.updateRedisKeyTTL(`wechat:login_user:${cToken}`, ttl);
         await this.updateRedisKeyTTL(openidKey, ttl);
-        await this.cacheManager.del(sessionKey);
+        await this.cacheManager.del(scene);
         return this.codeService.business('Success', cToken);
       }
     }
@@ -84,7 +86,6 @@ export class AuthService {
     //
     const openidKey = `wechat:login_openid:${openid}`;
 
-    const salt = this.appConfig.params.weixinLoginSalt;
     const token = this.utilsService.genRandomToken(openid, salt);
     const ttl = 30 * 60 * 1000;
     const tokenKey = `wechat:login_user:${token}`;
@@ -127,7 +128,7 @@ export class AuthService {
     }
     //
     await this.cacheManager.set(tokenKey, openidKey, ttl);
-    await this.cacheManager.del(sessionKey);
+    await this.cacheManager.del(scene);
     return this.codeService.business('Success', token);
   }
 

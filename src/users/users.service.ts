@@ -43,7 +43,10 @@ export class UsersService {
   // 临时保存登录用户
   async saveTempWxUser(openid: string, ticket: string) {
     const salt = this.appConfig.params.weixinLoginSalt;
-    const sessionKey = this.utilsService.getSha1(ticket + salt);
+    const salt2 = this.appConfig.params.weixinLoginMiniSceneSalt;
+    const sessionKey = this.utilsService.getMd5(
+      this.utilsService.getSha1(ticket + salt) + salt2,
+    );
     await this.cacheManager.set(sessionKey, openid, 10 * 1000);
     return;
   }
