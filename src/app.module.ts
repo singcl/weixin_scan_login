@@ -1,6 +1,8 @@
-import { Module } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { Module, CacheModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { redisStore } from 'cache-manager-redis-yet';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -20,6 +22,13 @@ import { CodeModule } from './code/code.module';
       load: [config],
       isGlobal: true,
       validationSchema,
+    }),
+    CacheModule.register({
+      // @ts-ignore
+      store: redisStore,
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+      isGlobal: true,
     }),
     // TypeOrmModule.forRoot({
     //   type: 'mysql',

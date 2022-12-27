@@ -10,12 +10,11 @@ import { MpController } from './mp.controller';
 import { UtilsModule } from '../utils/utils.module';
 import { UsersModule } from '../users/users.module';
 import { MiniSdkModule } from '../mini-sdk/mini-sdk.module';
-import Cache from '../cache/cache.module';
 
 bodyParserXML(bodyParser);
 
 @Module({
-  imports: [UtilsModule, /* HttpModule, */ Cache, UsersModule, MiniSdkModule],
+  imports: [UtilsModule /* HttpModule, */, UsersModule, MiniSdkModule],
   providers: [MpService],
   controllers: [MpController],
 })

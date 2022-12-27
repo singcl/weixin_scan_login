@@ -5,10 +5,9 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import { TokenStrategy } from './token.strategy';
-import Cache from '../cache/cache.module';
 
 @Module({
-  imports: [UsersModule, PassportModule, Cache, UtilsModule],
+  imports: [UsersModule, PassportModule, UtilsModule],
   providers: [AuthService, LocalStrategy, TokenStrategy],
   exports: [AuthService],
 })
