@@ -71,14 +71,7 @@ export class MpController {
     @Param('ticket') ticket?: string,
     @Query('env') env?: string,
   ) {
-    if (!ticket) {
-      return {
-        success: false,
-        message: '缺少参数',
-      };
-    }
-    const data = await this.mpService.mpMiniQrcode(ticket, env);
-    res.type('png').send(data);
+    return this.mpService.mpMiniQrcode(res, ticket, env);
   }
 
   @Get('mini-token')

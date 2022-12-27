@@ -1,5 +1,6 @@
 import { Injectable, Inject, CACHE_MANAGER } from '@nestjs/common';
 import { ConfigType /* ConfigService */ } from '@nestjs/config';
+import type { Response as ExpressResponse } from 'express';
 import { UtilsService } from '../utils/services/utils.service';
 import { Cache } from 'cache-manager';
 // import { HttpService } from '@nestjs/axios';
@@ -73,11 +74,14 @@ export class MpService {
   }
 
   // 获取小程序 小程序码
-  async mpMiniQrcode(ticket: string, env?: string) {
+  async mpMiniQrcode(res: ExpressResponse, ticket?: string, env?: string) {
+    if (!ticket) {
+      return this.codeService.business('AuthLoginParamRequiredError');
+    }
     const salt = this.appConfig.params.weixinLoginMiniSceneSalt;
     const scene = this.utilsService.getMd5(ticket + salt);
     const data = await this.miniSdkService.getMpMiniQrCode(scene, env);
-    return data;
+    res.type('png').send(data);
   }
 
   // 获取小程序登录临时token
