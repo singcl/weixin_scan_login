@@ -157,17 +157,24 @@ export class MpService {
     await this.cacheManager.set(sc, user.openid, 10 * 1000);
     return this.codeService.business('Success');
   }
+  // TODO:z怎么优雅更新redis key 的过期时间？
+  async updateRedisKeyTTL(key: string, ttl: number) {
+    const value = await this.cacheManager.get(key);
+    if (value) {
+      await this.cacheManager.set(key, value, ttl);
+    }
+  }
   // 微信小程序确认Check
   // TODO: 1. 重复登录 2. 已经登录不再发起请求的情况 3. 这里的逻辑移动到其他合理的模块
-  async mpMiniProgramScanCheck(sessionKey: string) {
-    const salt = this.appConfig.params.weixinLoginMiniSceneSalt;
-    const scene = this.utilsService.getMd5(sessionKey + salt);
-
+  async mpMiniProgramScanCheck(sessionKey?: string, cToken?: string) {
     if (!sessionKey) {
       throw new GoneException(
         this.codeService.business('AuthLoginParamRequiredError'),
       );
     }
+    const salt = this.appConfig.params.weixinLoginMiniSceneSalt;
+    const scene = this.utilsService.getMd5(sessionKey + salt);
+
     const openid: string = await this.cacheManager.get(scene);
     if (!openid) {
       return this.codeService.business('Success');
@@ -179,8 +186,22 @@ export class MpService {
         this.codeService.business('AuthLoginUserNotFoundError'),
       );
     }
-    const openidKey = `wechat:login_openid:${openid}`;
 
+    // 如果有token, 更新当前用户token后直接返回
+    if (cToken) {
+      const openidKey: string | null = await this.cacheManager.get(
+        `wechat:login_user:${cToken}`,
+      );
+      if (openidKey && openidKey === `wechat:login_openid:${openid}`) {
+        const ttl = 30 * 60 * 1000;
+        await this.updateRedisKeyTTL(`wechat:login_user:${cToken}`, ttl);
+        await this.updateRedisKeyTTL(openidKey, ttl);
+        await this.cacheManager.del(sessionKey);
+        return this.codeService.business('Success', cToken);
+      }
+    }
+
+    const openidKey = `wechat:login_openid:${openid}`;
     const token = this.utilsService.genRandomToken(openid, salt);
     const ttl = 30 * 60 * 1000;
     const tokenKey = `wechat:login_user:${token}`;

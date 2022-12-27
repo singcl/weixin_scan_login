@@ -36,6 +36,10 @@ export default defineComponent((props, { emit }) => {
       },
     );
     const data = await response.json();
+    if (![200, 201].includes(response.status)) {
+      clearTimeout(timer.value);
+      return Promise.reject(data);
+    }
     return data;
   }
 

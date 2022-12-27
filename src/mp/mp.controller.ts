@@ -97,7 +97,13 @@ export class MpController {
 
   // 微信小程序登录Check
   @Get('mini/scan/check')
-  async miniProgramScanCheck(@Query('sessionKey') sessionKey: string) {
-    return this.mpService.mpMiniProgramScanCheck(sessionKey);
+  async miniProgramScanCheck(
+    @Request() req,
+    @Query('sessionKey') sessionKey: string,
+  ) {
+    return this.mpService.mpMiniProgramScanCheck(
+      sessionKey,
+      req.header('WxToken'),
+    );
   }
 }
