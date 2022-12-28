@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
+import { WxErrorInfo } from '../../mini-sdk/dtos/mini-sdk.dto';
 // 不能写成这样：
 // import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
@@ -64,5 +65,9 @@ export class UtilsService {
 
   genUuidToken() {
     return uuidv4().replace(/-/g, '').toLowerCase();
+  }
+
+  isWxError<T = unknown>(data: WxErrorInfo | T): data is WxErrorInfo {
+    return typeof (<WxErrorInfo>data).errcode === 'number';
   }
 }
