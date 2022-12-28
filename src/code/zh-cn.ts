@@ -65,4 +65,5 @@ export enum ZhCNText {
   AuthLoginCountError = '同一个账号登陆用户数超过上限',
   AuthLoginParamRequiredError = '缺少参数',
   AuthLoginUserNotFoundError = '未找到用户',
+  AuthLoginWxApiError = '微信API调用失败',
 }

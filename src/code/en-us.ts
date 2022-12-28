@@ -65,4 +65,5 @@ export enum EnUSText {
   AuthLoginCountError = 'Failed to more than login account number',
   AuthLoginParamRequiredError = 'params required',
   AuthLoginUserNotFoundError = 'login user not found',
+  AuthLoginWxApiError = 'Failed to wechat api',
 }
