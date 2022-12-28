@@ -12,6 +12,7 @@ export default registerAs('config', () => ({
   },
   server: {
     isProd: process.env.NODE_ENV === 'production',
+    nodeEnv: process.env.NODE_ENV || 'production',
     port: parseInt(process.env.PORT, 10) || 8080,
     context: process.env.CONTEXT || 'v1',
     origins: process.env.ORIGINS ? process.env.ORIGINS.split(',') : '*',

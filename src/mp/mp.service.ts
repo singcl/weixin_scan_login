@@ -35,7 +35,7 @@ export class MpService {
   ) {}
 
   login() {
-    return { message: 'Hello world!' };
+    return { nodeEnv: this.appConfig.server.nodeEnv };
   }
 
   // 验证消息的确来自微信服务器

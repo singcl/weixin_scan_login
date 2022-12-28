@@ -8,7 +8,15 @@ export default defineComponent((props, { emit }) => {
   onMounted(async () => {
     const sessionKey = await getMiniToken();
     miniToken.value = sessionKey;
-    miniQrcode.value = `/mp/mini-qrcode/${sessionKey}`;
+    const nodeEnv = document.getElementById('nodeEnv').value;
+    const codeEnv =
+      {
+        development: 'develop',
+        test: 'trial',
+        production: 'release',
+      }[nodeEnv] || 'develop';
+    const codeEnvStr = `env=${codeEnv}`;
+    miniQrcode.value = `/mp/mini-qrcode/${sessionKey}?${codeEnvStr}`;
     checkRetry(sessionKey, 5);
   });
   onBeforeUnmount(() => {
