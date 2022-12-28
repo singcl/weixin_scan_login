@@ -15,12 +15,10 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         PORT: 8994,
-        SERV_ENV: 'official',
       },
-      env_dev: {
-        NODE_ENV: 'development',
+      env_test: {
+        NODE_ENV: 'test',
         PORT: 8994,
-        SERV_ENV: 'test',
       },
     },
   ],
