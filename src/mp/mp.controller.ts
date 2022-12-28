@@ -18,6 +18,7 @@ import {
   WxCheckSignatureDto,
   WxSubscribeEventDto,
 } from './dtos/wx-check-signature.dto';
+import { ParseGivenTypePipe } from '../parse-given-type/parse-given-type.pipe';
 
 @Controller('mp')
 export class MpController {
@@ -66,7 +67,7 @@ export class MpController {
   @Get('mini-qrcode/:ticket')
   async miniQrCode(
     @Response() res: ExpressResponse,
-    @Param('ticket') ticket?: string,
+    @Param('ticket', ParseGivenTypePipe) ticket: string,
     @Query('env') env?: string,
   ) {
     return this.mpService.mpMiniQrcode(res, ticket, env);
@@ -79,7 +80,7 @@ export class MpController {
 
   // 微信小程序登录
   @Get('mini/login')
-  async miniProgramLogin(@Query('code') code: string) {
+  async miniProgramLogin(@Query('code', ParseGivenTypePipe) code: string) {
     return this.mpService.mpMiniProgramLogin(code);
   }
 
@@ -88,7 +89,7 @@ export class MpController {
   @Get('mini/scan/confirm')
   async miniProgramScanConform(
     @Request() req: Record<any, any>,
-    @Query('sc') sc: string,
+    @Query('sc', ParseGivenTypePipe) sc: string,
   ) {
     return this.mpService.mpMiniProgramScanConform(sc, req.user);
   }
