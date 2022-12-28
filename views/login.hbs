@@ -21,6 +21,9 @@
   <input type="hidden" id="nodeEnv" value="{{nodeEnv}}">
   <div id='app'></div>
   <script type="module">
+    window.__NEST_DATA__ = {
+      nodeEnv: "{{ nodeEnv }}"
+    };
     import { createApp } from 'vue';
     import App from '/views/login/login.js';
     createApp(App).mount('#app');
