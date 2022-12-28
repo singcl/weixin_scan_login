@@ -1,5 +1,9 @@
 export const environments = {
-  dev: '.development.env',
-  prod: '.env',
+  development: [
+    'env/.env.development.local',
+    'env/.env.development',
+    'env/.env',
+  ],
+  trial: '.env',
   production: '.env',
 };

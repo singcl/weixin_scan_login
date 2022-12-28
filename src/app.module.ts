@@ -7,7 +7,7 @@ import { redisStore } from 'cache-manager-redis-yet';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { config, /*  environments, */ validationSchema } from './config';
+import { config, environments, validationSchema } from './config';
 import { User } from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { MpModule } from './mp/mp.module';
@@ -17,7 +17,7 @@ import { CodeModule } from './code/code.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      // envFilePath: environments[`${process.env.NODE_ENV}`],
+      envFilePath: environments[`${process.env.NODE_ENV}`],
       // ignoreEnvFile: process.env.NODE_ENV === 'production' || false,
       load: [config],
       isGlobal: true,
