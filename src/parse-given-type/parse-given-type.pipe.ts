@@ -4,16 +4,21 @@ import {
   Injectable,
   PipeTransform,
   BadRequestException,
+  GoneException,
 } from '@nestjs/common';
+import { CodeService } from '../code/code.service';
 
 @Injectable()
 export class ParseGivenTypePipe implements PipeTransform {
+  constructor(private readonly codeService: CodeService) {}
   async transform(value: any, { metatype }: ArgumentMetadata) {
     if (!metatype || !this.toValidate(metatype)) {
       throw new BadRequestException('Validation failed');
     }
     if (typeof value === 'undefined') {
-      throw new BadRequestException('Validation failed, Empty is not allowed');
+      throw new GoneException(
+        this.codeService.business('AuthLoginParamRequiredError'),
+      );
     }
 
     switch (metatype) {

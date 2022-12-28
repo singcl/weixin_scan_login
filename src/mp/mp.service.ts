@@ -79,12 +79,7 @@ export class MpService {
   }
 
   // 获取小程序 小程序码
-  async mpMiniQrcode(res: ExpressResponse, ticket?: string, env?: string) {
-    if (!ticket) {
-      throw new GoneException(
-        this.codeService.business('AuthLoginParamRequiredError'),
-      );
-    }
+  async mpMiniQrcode(res: ExpressResponse, ticket: string, env?: string) {
     const salt = this.appConfig.params.weixinLoginMiniSceneSalt;
     const scene = this.utilsService.getMd5(ticket + salt);
     const data = await this.miniSdkService.getMpMiniQrCode(scene, env);
