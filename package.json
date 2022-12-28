@@ -45,6 +45,8 @@
     "body-parser-xml": "^2.0.3",
     "cache-manager": "^5.1.4",
     "cache-manager-redis-yet": "^4.0.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
     "hbs": "^4.2.0",
     "joi": "^17.7.0",
     "mysql2": "^2.3.3",
