@@ -9,6 +9,7 @@ import {
   WxTokenApiDto,
   WxCode2SessionApiDto,
   WxQrcodeApiDto,
+  WxErrorInfo,
 } from './dtos/mini-sdk.dto';
 import { WxMiniQrcodeApiDto } from './interfaces/mini-skd.interface';
 
@@ -44,7 +45,7 @@ export class MiniSdkService {
       code,
     ]);
     const { data } = await firstValueFrom(
-      this.httpService.get<WxCode2SessionApiDto>(url),
+      this.httpService.get<WxCode2SessionApiDto | WxErrorInfo>(url),
     );
     return data;
   }

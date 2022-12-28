@@ -99,9 +99,11 @@ export class MpService {
 
   // 小程序登录
   async mpMiniProgramLogin(code: string) {
-    const { session_key, openid } = await this.miniSdkService.miniCode2Session(
-      code,
-    );
+    const response = await this.miniSdkService.miniCode2Session(code);
+    if (this.utilsService.isWxError(response)) {
+      throw new GoneException(this.codeService.business('AuthLoginWxApiError'));
+    }
+    const { session_key, openid } = response;
     const res = await this.usersService.createWxUser(openid);
     return this.usersService.genUserSession(openid, res);
   }

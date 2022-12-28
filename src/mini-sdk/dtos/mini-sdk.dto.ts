@@ -18,3 +18,8 @@ export class WxQrcodeApiDto {
   readonly url: string;
   readonly expire_seconds: number;
 }
+
+export class WxErrorInfo {
+  readonly errcode: string;
+  readonly errmsg: string;
+}
