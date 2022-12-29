@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
+// TODO: 完善entity
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
