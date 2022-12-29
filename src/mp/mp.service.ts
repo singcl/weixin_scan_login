@@ -35,7 +35,10 @@ export class MpService {
   ) {}
 
   login() {
-    return { nodeEnv: this.appConfig.server.nodeEnv };
+    return {
+      nodeEnv: this.appConfig.server.nodeEnv,
+      headerLoginToken: this.appConfig.project.headerLoginToken,
+    };
   }
 
   // 验证消息的确来自微信服务器

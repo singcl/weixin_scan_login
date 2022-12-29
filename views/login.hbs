@@ -19,10 +19,12 @@
 
 <body>
   <input type="hidden" id="nodeEnv" value="{{nodeEnv}}">
+  <input type="hidden" id="headerLoginToken" value="{{headerLoginToken}}">
   <div id='app'></div>
   <script type="module">
     window.__NEST_DATA__ = {
-      nodeEnv: "{{ nodeEnv }}"
+      nodeEnv: "{{ nodeEnv }}",
+      headerLoginToken: "{{ headerLoginToken }}",
     };
     import { createApp } from 'vue';
     import App from '/views/login/login.js';
