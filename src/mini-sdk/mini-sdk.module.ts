@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { MiniSdkService } from './mini-sdk.service';
-import { UtilsModule } from '../utils/utils.module';
 
 @Module({
-  imports: [UtilsModule, HttpModule],
+  imports: [HttpModule],
   providers: [MiniSdkService],
   exports: [MiniSdkService],
 })

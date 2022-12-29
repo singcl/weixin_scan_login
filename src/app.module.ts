@@ -13,6 +13,8 @@ import { AuthModule } from './auth/auth.module';
 import { MpModule } from './mp/mp.module';
 import { MiniSdkModule } from './mini-sdk/mini-sdk.module';
 import { CodeModule } from './code/code.module';
+import { AuthorizedModule } from './authorized/authorized.module';
+import { UtilsModule } from './utils/utils.module';
 
 @Module({
   imports: [
@@ -59,6 +61,8 @@ import { CodeModule } from './code/code.module';
     MpModule,
     MiniSdkModule,
     CodeModule,
+    UtilsModule,
+    AuthorizedModule,
   ],
   controllers: [AppController],
   providers: [AppService],
