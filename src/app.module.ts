@@ -3,6 +3,7 @@ import { Module, CacheModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { redisStore } from 'cache-manager-redis-yet';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -55,6 +56,7 @@ import { UtilsModule } from './utils/utils.module';
         database: config.get('MYSQL_DATABASE'),
         entities: [User],
         synchronize: true,
+        namingStrategy: new SnakeNamingStrategy(),
       }),
     }),
     AuthModule,
