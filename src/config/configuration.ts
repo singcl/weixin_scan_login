@@ -5,6 +5,9 @@ export default registerAs('config', () => ({
     apiPrefix: process.env.API_PREFIX || 'API-PREFIX',
     projectName: process.env.PROJECT_NAME,
     headerLoginToken: process.env.HEADER_LOGIN_TOKEN || 'WxToken',
+    headerSignToken: process.env.HEADER_SIGN_TOKEN,
+    headerSignTokenDate: process.env.HEADER_SIGN_TOKEN_DATE,
+    headerSignTokenTimeout: process.env.HEADER_SIGN_TOKEN_TIMEOUT,
     redisKeyPrefixLoginUserToken:
       process.env.PROJECT_NAME + process.env.REDIS_KEY_PREFIX_LOGIN_USER_TOKEN,
     redisKeyPrefixLoginUserOpenid:
