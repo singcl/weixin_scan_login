@@ -105,4 +105,8 @@ export class AuthService {
     await this.updateRedisKeyTTL(openidKey, ttl);
     return user;
   }
+
+  async validateSignature(signature: string, signatureDate: string) {
+    // TODO:
+  }
 }

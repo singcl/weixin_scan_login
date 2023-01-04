@@ -11,13 +11,14 @@ export class SignatureStrategy extends PassportStrategy(
 ) {
   constructor(private readonly authService: AuthService) {
     super({
-      headerFields: ['wxtoken'], // 自动格式化为小写
-      tokenFields: ['token', 'ticket'],
-      params: true,
+      headerSignFields: ['authorization'], // 自动格式化为小写
+      // tokenSignFields: ['authorization'],
+      headerSignDateFields: ['authorization-date'], // 自动格式化为小写
+      // tokenSignDateFields: ['authorization-date'],
     });
   }
 
-  async validate(token: string): Promise<any> {
-    return await this.authService.validateToken(token);
+  async validate(signature: string, signatureDate: string): Promise<any> {
+    return await this.authService.validateSignature(signature, signatureDate);
   }
 }

@@ -27,8 +27,10 @@ const passport = require('passport-strategy'),
  * credentials are found.
  *
  * Options:
- *   - `tokenFields`  array of field names where the token is found, defaults to [token]
- *   - `headerFields`  array of field names where the token is found, defaults to []
+ *   - `tokenSignFields`  array of field names where the token is found, defaults to [authorization]
+ *   - `headerSignFields`  array of field names where the token is found, defaults to []
+ *   - `tokenSignDateFields`  array of field names where the token is found, defaults to [authorization-date]
+ *   - `headerSignDateFields`  array of field names where the token is found, defaults to []
  *   - `passReqToCallback`  when `true`, `req` is the first argument to the verify callback (default: `false`)
  *   - `params`  when `true` the request params are also included in the lookup
  *   - `optional`  when `true` the token is optional and the strategy doesn't return an error
@@ -37,8 +39,8 @@ const passport = require('passport-strategy'),
  * Examples:
  *
  *     passport.use(new AuthTokenStrategy(
- *       function(token, done) {
- *         AccessToken.findById(token, function (err, user) {
+ *       function(signature, signatureDate, done) {
+ *         AccessToken.findById(signature, signatureDate, function (err, user) {
  *           done(err, user);
  *         });
  *       }
@@ -66,11 +68,16 @@ function Strategy(options, verify) {
     throw new TypeError('AuthTokenStrategy requires a verify callback');
   }
 
-  this._tokenFields = options.tokenFields || ['token'];
-  this._headerFields = options.headerFields || [];
+  this._tokenSignFields = options.tokenSignFields || [];
+  this._headerSignFields = options.headerSignFields || ['authorization'];
+
+  this._tokenSignDateFields = options.tokenSignDateFields || [];
+  this._headerSignDateFields = options.headerSignDateFields || [
+    'authorization-date',
+  ];
 
   passport.Strategy.call(this);
-  this.name = 'authtoken';
+  this.name = 'authorization';
   this._verify = verify;
   this._passReqToCallback = options.passReqToCallback;
 }
@@ -90,27 +97,47 @@ util.inherits(Strategy, passport.Strategy);
 Strategy.prototype.authenticate = function (req, options) {
   options = options || {};
 
-  let i, len, token;
+  function lookupSignature(headerFields = [], tokenFields = []) {
+    let i, len, token;
 
-  for (i = 0, len = this._headerFields.length; !token && i < len; i++) {
-    token = lookup(req.headers, this._headerFields[i], options);
-  }
-
-  for (i = 0, len = this._tokenFields.length; !token && i < len; i++) {
-    token =
-      lookup(req.body, this._tokenFields[i], options) ||
-      lookup(req.query, this._tokenFields[i], options);
-
-    if (options.params) {
-      token = lookup(req.params, this._tokenFields[i], options);
+    for (i = 0, len = headerFields.length; !token && i < len; i++) {
+      token = lookup(req.headers, headerFields[i], options);
     }
+
+    for (i = 0, len = tokenFields.length; !token && i < len; i++) {
+      token =
+        lookup(req.body, tokenFields[i], options) ||
+        lookup(req.query, tokenFields[i], options);
+
+      if (options.params) {
+        token = lookup(req.params, tokenFields[i], options);
+      }
+    }
+    return token;
   }
+
+  const signature = lookupSignature(
+    this._headerSignFields,
+    this._tokenSignFields,
+  );
+  const signatureDate = lookupSignature(
+    this._headerSignDateFields,
+    this._tokenSignDateFields,
+  );
 
   if (!options.optional) {
-    if (!token) {
+    if (!signature) {
       return this.fail(
         {
-          message: options.badRequestMessage || 'Missing auth token',
+          message: options.badRequestMessage || 'Missing auth signature',
+        },
+        400,
+      );
+    }
+    if (!signatureDate) {
+      return this.fail(
+        {
+          message: options.badRequestMessage || 'Missing auth signature-date',
         },
         400,
       );
@@ -142,9 +169,9 @@ Strategy.prototype.authenticate = function (req, options) {
 
   try {
     if (self._passReqToCallback) {
-      this._verify(req, token, verified);
+      this._verify(req, signature, signatureDate, verified);
     } else {
-      this._verify(token, verified);
+      this._verify(signature, signatureDate, verified);
     }
   } catch (ex) {
     return self.error(ex);
