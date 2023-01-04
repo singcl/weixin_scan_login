@@ -1,8 +1,9 @@
-import { Strategy } from 'passport-auth-token';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const Strategy = require('./../libs/passport-auth-signature');
 @Injectable()
 export class SignatureStrategy extends PassportStrategy(
   Strategy,

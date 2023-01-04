@@ -154,4 +154,4 @@ Strategy.prototype.authenticate = function (req, options) {
 /**
  * Expose `Strategy`.
  */
-module.exports = Strategy;
+module.exports = exports = Strategy;
