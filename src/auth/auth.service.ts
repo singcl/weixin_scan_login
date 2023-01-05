@@ -13,6 +13,14 @@ import { CodeService } from './../code/code.service';
 
 import { config } from './../config';
 
+interface ValidateSignature {
+  signature: string;
+  signatureDate: string;
+  method: string;
+  path: string;
+  params: any;
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -106,7 +114,7 @@ export class AuthService {
     return user;
   }
 
-  async validateSignature(signature: string, signatureDate: string) {
+  async validateSignature(data: ValidateSignature) {
     // TODO:
   }
 }
