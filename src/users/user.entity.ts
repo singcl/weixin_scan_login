@@ -18,7 +18,7 @@ export class User {
   @Column({ comment: '微信session_key', length: 60, default: '' })
   sessionKey: string;
 
-  @Column({ comment: '用户名', length: 32, default: 'singcl' })
+  @Column({ comment: '用户名', length: 32, unique: true })
   username: string;
 
   @Column({ comment: '昵称', length: 60, default: '微信用户' })

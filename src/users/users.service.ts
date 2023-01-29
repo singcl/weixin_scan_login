@@ -39,8 +39,8 @@ export class UsersService {
     //
     if (!res) {
       const user = new User();
-      user.mobile = '130xxxxxxxx';
       user.openid = openid;
+      user.username = this.utilsService.genUuidToken();
       user.nickname = `微信用户${this.utilsService.getRandomStr()}`;
       res = await this.save(user);
     }
