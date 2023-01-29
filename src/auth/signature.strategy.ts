@@ -31,29 +31,10 @@ export class SignatureStrategy extends PassportStrategy(
     signature: string,
     signatureDate: string,
   ): Promise<any> {
-    const method = req.method;
-    const path = req.path;
-    const body = req.body;
-    const query = req.query;
-    let params: Record<string, any> = {};
-    switch (req.method.toLowerCase()) {
-      case 'get':
-      case 'head':
-        params = query;
-        break;
-      default:
-        params = {
-          ...query,
-          ...body, // TODO: body可能不是对象类型
-        };
-        break;
-    }
-    return await this.authService.validateSignature({
+    return await this.authService.validateSignature(
+      req,
       signature,
       signatureDate,
-      method,
-      path,
-      params,
-    });
+    );
   }
 }

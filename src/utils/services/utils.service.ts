@@ -70,4 +70,12 @@ export class UtilsService {
   isWxError<T = unknown>(data: WxErrorInfo | T): data is WxErrorInfo {
     return typeof (<WxErrorInfo>data).errcode === 'number';
   }
+
+  // 判断是否为纯对象
+  isPureObject(v: unknown) {
+    return (
+      typeof v === 'object' &&
+      Object.prototype.toString.call(v) == '[object Object]'
+    );
+  }
 }

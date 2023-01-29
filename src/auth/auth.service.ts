@@ -7,19 +7,20 @@ import {
 } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { ConfigType /* ConfigService */ } from '@nestjs/config';
+import type { Request as ExpressRequest } from 'express';
 import { UtilsService } from './../utils/services/utils.service';
 import { UsersService } from './../users/users.service';
 import { CodeService } from './../code/code.service';
 
 import { config } from './../config';
 
-interface ValidateSignature {
-  signature: string;
-  signatureDate: string;
-  method: string;
-  path: string;
-  params: any;
-}
+// interface ValidateSignature {
+//   signature: string;
+//   signatureDate: string;
+//   method: string;
+//   path: string;
+//   params: any;
+// }
 
 @Injectable()
 export class AuthService {
@@ -114,7 +115,33 @@ export class AuthService {
     return user;
   }
 
-  async validateSignature(data: ValidateSignature) {
-    // TODO:
+  async validateSignature(
+    req: ExpressRequest,
+    signature: string,
+    signatureDate: string,
+  ) {
+    const method = req.method;
+    const path = req.path;
+    const body = req.body;
+    const query = req.query;
+    let params: Record<string, any> = {};
+    switch (method.toLowerCase()) {
+      case 'get':
+      case 'head':
+        params = query;
+        break;
+      default:
+        // body可能不是对象类型
+        if (!this.utilsService.isPureObject(body)) {
+          throw new UnauthorizedException(
+            this.codeService.business('AuthLoginBodyTypeError'),
+          );
+        }
+        params = {
+          ...query,
+          ...body,
+        };
+        break;
+    }
   }
 }
