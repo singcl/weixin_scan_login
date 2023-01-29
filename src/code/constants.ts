@@ -67,4 +67,5 @@ export enum Code {
   AuthLoginParamRequiredError = 20503,
   AuthLoginUserNotFoundError = 20504,
   AuthLoginWxApiError = 20505,
+  AuthLoginBodyTypeError = 20506,
 }
