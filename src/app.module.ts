@@ -9,13 +9,16 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { config, environments, validationSchema } from './config';
-import { User } from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { MpModule } from './mp/mp.module';
 import { MiniSdkModule } from './mini-sdk/mini-sdk.module';
 import { CodeModule } from './code/code.module';
 import { AuthorizedModule } from './authorized/authorized.module';
 import { UtilsModule } from './utils/utils.module';
+
+import { User } from './users/user.entity';
+import { AuthorizedAPI } from './authorized/authorized_api.entity';
+import { Authorized } from './authorized/authorized.entity';
 
 @Module({
   imports: [
@@ -54,7 +57,7 @@ import { UtilsModule } from './utils/utils.module';
         username: config.get('MYSQL_USERNAME'),
         password: config.get('MYSQL_PASSWORD'),
         database: config.get('MYSQL_DATABASE'),
-        entities: [User],
+        entities: [User, AuthorizedAPI, Authorized],
         synchronize: true,
         namingStrategy: new SnakeNamingStrategy(),
       }),
