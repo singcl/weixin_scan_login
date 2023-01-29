@@ -8,7 +8,7 @@ export class AuthorizedAPI {
   id: number;
 
   @Column({ comment: '调用方key', length: 32, default: '' })
-  appId: string;
+  businessKey: string;
 
   @Column({ comment: '请求方式', length: 30, default: '' })
   method: string;

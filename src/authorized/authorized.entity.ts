@@ -7,13 +7,13 @@ export class Authorized {
   id: number;
 
   @Column({ comment: '调用方key', length: 32, default: '' })
-  appId: string;
+  businessKey: string;
 
   @Column({ comment: '调用方secret', length: 60, default: '', unique: true })
-  appSecret: string;
+  businessSecret: string;
 
   @Column({ comment: '调用方对接人', length: 60, default: '' })
-  appDeveloper: string;
+  businessDeveloper: string;
 
   @Column({ comment: '备注', default: '' })
   remark: string;
