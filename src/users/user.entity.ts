@@ -8,22 +8,26 @@ export class User {
   @Column({ comment: '微信openid', length: 60, unique: true })
   openid: string;
 
-  @Column({ comment: '微信unionid', length: 60, unique: true })
+  @Column({
+    comment: '微信unionid',
+    length: 60,
+    default: '' /*, unique: true */,
+  })
   unionid: string;
 
-  @Column({ comment: '微信session_key', length: 60 })
+  @Column({ comment: '微信session_key', length: 60, default: '' })
   sessionKey: string;
 
-  @Column({ comment: '用户名', length: 32 })
+  @Column({ comment: '用户名', length: 32, default: 'singcl' })
   username: string;
 
-  @Column({ comment: '昵称', length: 60 })
+  @Column({ comment: '昵称', length: 60, default: '微信用户' })
   nickname: string;
 
-  @Column({ comment: '头像' })
+  @Column({ comment: '头像', default: '' })
   avatarUrl: string;
 
-  @Column({ comment: '手机号', length: 20 })
+  @Column({ comment: '手机号', length: 20, default: '' })
   mobile: string;
 
   @Column('tinyint', { comment: '是否启用 1:是  -1:否', default: 1 })
@@ -38,7 +42,7 @@ export class User {
   })
   createdAt: string;
 
-  @Column({ comment: '创建人', length: 60 })
+  @Column({ comment: '创建人', length: 60, default: '' })
   createdUser: string;
 
   @Column('timestamp', {
@@ -48,6 +52,6 @@ export class User {
   })
   updatedAt: string;
 
-  @Column({ comment: '更新人', length: 60 })
+  @Column({ comment: '更新人', length: 60, default: '' })
   updatedUser: string;
 }
