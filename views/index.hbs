@@ -11,7 +11,8 @@
         "imports": { 
           "vue": "/js/vue/vue3.esm-browser.min.js",
           "@vicons/ionicons5/": "/js/@vicons/ionicons5/es/",
-          "naive": "/js/vue/naive.min.js"
+          "naive": "/js/vue/naive.min.js",
+          "kiko": "/js/utils/kiko/Kiko.js"
         } 
       }
     </script>
@@ -24,6 +25,7 @@
     <h3 class="text-3xl">{{ nickname }}</h3>
     <div id='app'></div>
   </div>
+  <script src="/js/lib/authorization/crypto-js.min.js"></script>
   <script type="module">
     import { createApp } from 'vue';
     import App from '/views/index/index.js';
