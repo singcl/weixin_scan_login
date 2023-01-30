@@ -12,6 +12,7 @@ import { UtilsService } from './../utils/services/utils.service';
 import { UsersService } from './../users/users.service';
 import { CodeService } from './../code/code.service';
 import { AuthorizedCommonService } from './../authorized/authorized_common.service';
+import { UtilsUrltable } from './../utils/services/utils-urltable';
 
 import { config, constants } from './../config';
 
@@ -34,6 +35,8 @@ export class AuthService {
     @Inject(config.KEY) private readonly appConfig: ConfigType<typeof config>,
     @Inject(constants.KEY)
     private readonly constantsConfig: ConfigType<typeof constants>,
+    @Inject('URL_TABLE')
+    private readonly newUtilsUrltable: () => UtilsUrltable,
   ) {
     //
   }
@@ -146,6 +149,7 @@ export class AuthService {
         this.codeService.business('AuthSignatureError'),
       );
     }
+    // console.log('---info', info);
     // 未进行接口授权
     if (info.apis.length < 1) {
       throw new UnauthorizedException(
@@ -153,10 +157,24 @@ export class AuthService {
       );
     }
     // 验证 c.Method() + c.Path() 是否授权
-
+    const table = this.newUtilsUrltable();
+    for (let i = 0; i < info.apis.length; i++) {
+      const item = info.apis[i];
+      table.append(item.method + item.api);
+    }
     //
     const method = req.method;
     const path = req.path;
+    const mappingRes = table.mapping(method + path);
+    if (!(mappingRes.success && mappingRes.data)) {
+      // 未进行接口授权
+      throw new UnauthorizedException(
+        this.codeService.business('AuthSignatureError'),
+      );
+    }
+    // console.log('-----root', JSON.stringify(table.root));
+    // console.log('----mappingRes', mappingRes);
+
     const body = req.body;
     const query = req.query;
     let params: Record<string, any> = {};

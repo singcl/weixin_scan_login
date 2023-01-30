@@ -9,9 +9,7 @@ import { UtilsService } from './services/utils.service';
     UtilsService,
     {
       provide: 'URL_TABLE',
-      useFactory: () => {
-        return new UtilsUrltable();
-      },
+      useValue: () => new UtilsUrltable(),
     },
   ],
   exports: [UtilsService, 'URL_TABLE'],

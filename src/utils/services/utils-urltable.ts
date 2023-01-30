@@ -12,7 +12,7 @@ type Section = {
 //   root: Section;
 // };
 
-type Result = { success: boolean; msg?: string; data?: string[] };
+type Result<T = string[]> = { success: boolean; msg?: string; data?: T };
 
 export class UtilsUrltable {
   empty = '';
@@ -137,6 +137,51 @@ export class UtilsUrltable {
     root.leaf = true;
     return {
       success: true,
+    };
+  }
+
+  // Mapping url to pattern
+  mapping(url: string): Result<any> {
+    const parseResult = this.parse(url);
+    if (!parseResult.success) {
+      return parseResult;
+    }
+    const paths = parseResult.data;
+    const pattern = [];
+    let root = this.root;
+    for (let path of paths) {
+      let next = root.mapping[path];
+      if (next == null) {
+        const nextFuzzy = root.mapping[this.fuzzy];
+        const nextOmitted = root.mapping[this.omitted];
+        if (nextFuzzy == null && nextOmitted == null) {
+          return {
+            success: true,
+            data: '',
+          };
+        }
+        if (nextOmitted != null) {
+          pattern.push(this.omitted);
+          return {
+            success: true,
+            data: pattern.join(this.delimiter),
+          };
+        }
+        next = nextFuzzy;
+        path = this.fuzzy;
+      }
+      root = next;
+      pattern.push(path);
+    }
+    if (root.leaf) {
+      return {
+        success: true,
+        data: pattern.join(this.delimiter),
+      };
+    }
+    return {
+      success: true,
+      data: '',
     };
   }
 }
