@@ -20,6 +20,7 @@
         "tinyint",
         "typeorm",
         "unionid",
+        "Urltable",
         "uuidv",
         "vicons",
         "wechat",
