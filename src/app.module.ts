@@ -8,7 +8,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { config, environments, validationSchema } from './config';
+import { config, constants, environments, validationSchema } from './config';
 import { AuthModule } from './auth/auth.module';
 import { MpModule } from './mp/mp.module';
 import { MiniSdkModule } from './mini-sdk/mini-sdk.module';
@@ -25,7 +25,7 @@ import { Authorized } from './authorized/authorized.entity';
     ConfigModule.forRoot({
       envFilePath: environments[`${process.env.NODE_ENV}`],
       // ignoreEnvFile: process.env.NODE_ENV === 'production' || false,
-      load: [config],
+      load: [config, constants],
       isGlobal: true,
       validationSchema,
     }),

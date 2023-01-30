@@ -11,8 +11,9 @@ import type { Request as ExpressRequest } from 'express';
 import { UtilsService } from './../utils/services/utils.service';
 import { UsersService } from './../users/users.service';
 import { CodeService } from './../code/code.service';
+import { AuthorizedCommonService } from './../authorized/authorized_common.service';
 
-import { config } from './../config';
+import { config, constants } from './../config';
 
 // interface ValidateSignature {
 //   signature: string;
@@ -28,8 +29,11 @@ export class AuthService {
     private readonly codeService: CodeService,
     private readonly usersService: UsersService,
     private readonly utilsService: UtilsService,
+    private readonly authorizedCommonService: AuthorizedCommonService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @Inject(config.KEY) private readonly appConfig: ConfigType<typeof config>,
+    @Inject(constants.KEY)
+    private readonly constantsConfig: ConfigType<typeof constants>,
   ) {
     //
   }
@@ -127,6 +131,29 @@ export class AuthService {
       );
     }
     const key = signatureSplit[0];
+    const info = await this.authorizedCommonService.findDetailsByBusinessKey(
+      key,
+    );
+    // 没有授权
+    if (!info) {
+      throw new UnauthorizedException(
+        this.codeService.business('AuthSignatureError'),
+      );
+    }
+    // 授权被禁用
+    if (info.isUsed === this.constantsConfig.constants.IsUsedNo) {
+      throw new UnauthorizedException(
+        this.codeService.business('AuthSignatureError'),
+      );
+    }
+    // 未进行接口授权
+    if (info.apis.length < 1) {
+      throw new UnauthorizedException(
+        this.codeService.business('AuthSignatureError'),
+      );
+    }
+    // 验证 c.Method() + c.Path() 是否授权
+
     //
     const method = req.method;
     const path = req.path;
