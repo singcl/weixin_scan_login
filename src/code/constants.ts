@@ -67,5 +67,8 @@ export enum Code {
   AuthLoginParamRequiredError = 20503,
   AuthLoginUserNotFoundError = 20504,
   AuthLoginWxApiError = 20505,
-  AuthLoginBodyTypeError = 20506,
+
+  AuthSignatureError = 20601,
+  // TODO: 更多详细的错误定义
+  AuthSignatureBodyTypeError = 20602,
 }

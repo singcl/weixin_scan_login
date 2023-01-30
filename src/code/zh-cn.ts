@@ -66,5 +66,7 @@ export enum ZhCNText {
   AuthLoginParamRequiredError = '缺少参数',
   AuthLoginUserNotFoundError = '未找到用户',
   AuthLoginWxApiError = '微信API调用失败',
-  AuthLoginBodyTypeError = 'Body参数解析失败',
+
+  AuthSignatureError = '签名解析失败',
+  AuthSignatureBodyTypeError = '签名Body参数解析失败',
 }

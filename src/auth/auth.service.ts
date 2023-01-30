@@ -120,6 +120,13 @@ export class AuthService {
     signature: string,
     signatureDate: string,
   ) {
+    const signatureSplit = signature.split(/\s+/);
+    if (signatureSplit.length < 2) {
+      throw new UnauthorizedException(
+        this.codeService.business('AuthSignatureError'),
+      );
+    }
+    //
     const method = req.method;
     const path = req.path;
     const body = req.body;
@@ -134,7 +141,7 @@ export class AuthService {
         // body可能不是对象类型
         if (!this.utilsService.isPureObject(body)) {
           throw new UnauthorizedException(
-            this.codeService.business('AuthLoginBodyTypeError'),
+            this.codeService.business('AuthSignatureBodyTypeError'),
           );
         }
         params = {

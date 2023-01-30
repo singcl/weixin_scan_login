@@ -66,5 +66,7 @@ export enum EnUSText {
   AuthLoginParamRequiredError = 'params required',
   AuthLoginUserNotFoundError = 'login user not found',
   AuthLoginWxApiError = 'Failed to wechat api',
-  AuthLoginBodyTypeError = 'Failed to parse body parameters',
+
+  AuthSignatureError = 'Failed to parse signature',
+  AuthSignatureBodyTypeError = 'Failed to parse body signature parameters',
 }
