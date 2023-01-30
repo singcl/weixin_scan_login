@@ -126,6 +126,7 @@ export class AuthService {
         this.codeService.business('AuthSignatureError'),
       );
     }
+    const key = signatureSplit[0];
     //
     const method = req.method;
     const path = req.path;
