@@ -7,7 +7,7 @@ export class AppService {
     //
   }
 
-  home(user: User) {
-    return { nickname: `${user.nickname}` };
+  home(user?: User) {
+    return { nickname: `${user?.nickname}` };
   }
 }
