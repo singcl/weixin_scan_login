@@ -75,6 +75,7 @@ function Strategy(options, verify) {
   this._headerSignDateFields = options.headerSignDateFields || [
     'authorization-date',
   ];
+  this._options = options;
 
   passport.Strategy.call(this);
   this.name = 'authorization';
@@ -95,7 +96,7 @@ util.inherits(Strategy, passport.Strategy);
  * @api protected
  */
 Strategy.prototype.authenticate = function (req, options) {
-  options = options || {};
+  options = Object.assign({}, this._options, options);
 
   function lookupSignature(headerFields = [], tokenFields = []) {
     let i, len, token;
