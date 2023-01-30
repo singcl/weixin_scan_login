@@ -56,7 +56,11 @@ export class AuthorizedCommonService {
         api: item.api,
       })),
     };
-    await this.cacheManager.set(cacheKey, cacheData);
+    await this.cacheManager.set(
+      cacheKey,
+      cacheData,
+      this.appConfig.project.loginSessionTTL,
+    );
     return cacheData;
   }
 }

@@ -14,6 +14,7 @@ export default registerAs('config', () => ({
       process.env.PROJECT_NAME + process.env.REDIS_KEY_PREFIX_LOGIN_USER_OPENID,
     redisKeyPrefixSignature:
       process.env.PROJECT_NAME + process.env.REDIS_KEY_PREFIX_SIGNATURE,
+    loginSessionTTL: Number(process.env.LOGIN_SESSION_TTL) * 1000,
   },
   server: {
     isProd: process.env.NODE_ENV === 'production',
