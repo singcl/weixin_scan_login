@@ -1,15 +1,45 @@
 import { defineComponent, h, ref } from 'vue';
 import Kiko from 'kiko';
+import axios from 'axios';
 
 // App
 export default defineComponent((props, { emit }) => {
   async function handleTestClick() {
-    const response = await new Kiko().fetch('/authorized/test', {
-      method: 'POST',
-      body: {
-        username: 'test_user',
+    axios.post(
+      '/authorized/test',
+      {
+        username: 'ds',
+        b: '333',
+        a: '我爱你',
+        e: [2, 3, 'ssseee'],
+        f: {
+          a: 2,
+          c: '444',
+          b: [{ s: 1 }, 3],
+        },
       },
-    });
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: 'admin lsjflekjfskle',
+          'Authorization-Date': '2022-01-21 23:32:11',
+        },
+      },
+    );
+    // const response = await new Kiko().fetch('/authorized/test', {
+    //   method: 'POST',
+    //   body: {
+    //     username: 'ds',
+    //     b: '333',
+    //     a: '我爱你',
+    //     e: [2, 3, 'ssseee'],
+    //     f: {
+    //       a: 2,
+    //       c: '444',
+    //       b: [{ s: 1 }, 3],
+    //     },
+    //   },
+    // });
   }
   return () =>
     h('div', null, [
