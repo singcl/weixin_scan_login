@@ -8,7 +8,12 @@ export function CSTLayoutString(date: number | Date) {
   return format(date, CSTLayout);
 }
 
-// ParseCSTInLocation 格式化时间
-export function ParseCSTInLocation(date: string) {
-  return parse(date, CSTLayout);
+// parseCSTInLocation 格式化时间
+export function parseCSTInLocation(date: string) {
+  return parse(date, CSTLayout, new Date());
+}
+
+// SubInLocation 计算时间差
+export function subInLocation(ts: Date) {
+  return Math.abs(Date.now() - ts.getTime());
 }

@@ -1,6 +1,10 @@
 import * as qs from 'querystring';
 import * as crypto from 'crypto';
-import { CSTLayoutString } from './utils-date';
+import {
+  CSTLayoutString,
+  parseCSTInLocation,
+  subInLocation,
+} from './utils-date';
 type Signature = {
   key: string;
   secret: string;
@@ -32,6 +36,24 @@ export class UtilsSignature {
       }, {});
   }
 
+  //
+  digest(
+    date: string,
+    path: string,
+    methodName: string,
+    params: Record<string, any>,
+  ) {
+    const sortParamsEncode = qs.stringify(this.sortByKey(params));
+    const enStr = `${path}${this.delimiter}${methodName}${this.delimiter}${sortParamsEncode}${this.delimiter}${date}`;
+    //
+    const digest = crypto
+      .createHmac('sha256', this.signature.secret)
+      .update(enStr)
+      .digest('base64');
+
+    return `${this.signature.key} ${digest}`;
+  }
+
   // Generate
   // path 请求的路径 (不附带 querystring)
   generate(path: string, method: string, params: Record<string, any>): Result {
@@ -56,14 +78,7 @@ export class UtilsSignature {
     }
     //
     const date = CSTLayoutString(Date.now());
-    const sortParamsEncode = qs.stringify(this.sortByKey(params));
-    const enStr = `${path}${this.delimiter}${methodName}${this.delimiter}${sortParamsEncode}${this.delimiter}${date}`;
-    //
-    const digest = crypto
-      .createHmac('sha256', this.signature.secret)
-      .update(enStr)
-      .digest('base64');
-    const authorization = `${this.signature.key} ${digest}`;
+    const authorization = this.digest(date, path, methodName, params);
     return {
       success: true,
       data: authorization,
@@ -101,5 +116,33 @@ export class UtilsSignature {
         msg: 'method param error',
       };
     }
+    const ts = parseCSTInLocation(date);
+    if (ts.toString() === 'Invalid Date') {
+      return {
+        success: false,
+        msg: "date must follow '2006-01-02 15:04:05'",
+      };
+    }
+
+    if (subInLocation(ts) > this.signature.ttl) {
+      return {
+        success: false,
+        msg: `date exceeds limit ${this.signature.ttl}`,
+      };
+    }
+
+    const auth = this.digest(date, path, methodName, params);
+    const ok = authorization == auth;
+
+    if (!ok)
+      return {
+        success: false,
+        mgs: '验证失败',
+      };
+
+    return {
+      success: true,
+      data: true,
+    };
   }
 }
