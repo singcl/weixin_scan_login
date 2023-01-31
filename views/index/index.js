@@ -17,6 +17,7 @@ export default defineComponent((props, { emit }) => {
           c: '444',
           b: [{ s: 1 }, 3],
         },
+        r: true,
       },
       {
         headers: {
