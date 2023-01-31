@@ -5,14 +5,17 @@ const businessKey = 'admin';
 const businessSecret = '12878dd962115106db6d';
 
 export function request(options) {
-  const { url, method = 'GET', data, headers = {} } = options;
+  const { url, method = 'GET', data = {}, params = {}, headers = {} } = options;
   const token = localStorage.getItem('_login_token_');
+  const arr = url.split('?');
+  const path = arr[0];
+  const query = Qs.parse(arr[1]);
   const auth = generateAuthorization({
     businessKey,
     businessSecret,
-    path: url.split('?')[0],
+    path: path,
     method: method.toUpperCase(),
-    params: data,
+    params: Object.assign({}, query, data, params),
   });
   //
   const headerRes = Object.assign(
