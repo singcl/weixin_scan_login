@@ -196,5 +196,25 @@ export class AuthService {
         };
         break;
     }
+    //
+    const utilsSignature = this.utilsService.createSignature({
+      key,
+      secret: info.secret,
+      ttl: this.appConfig.project.headerSignTokenTimeout,
+    });
+    const verifyRes = utilsSignature.verify(
+      signature,
+      signatureDate,
+      path,
+      method,
+      params,
+    );
+    if (!(verifyRes.success && verifyRes.data)) {
+      // 接口授权失败
+      throw new UnauthorizedException(
+        this.codeService.business('AuthSignatureError'),
+      );
+    }
+    return verifyRes.data;
   }
 }
