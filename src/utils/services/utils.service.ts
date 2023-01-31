@@ -5,6 +5,7 @@ import { WxErrorInfo } from '../../mini-sdk/dtos/mini-sdk.dto';
 // import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import { WxCheckSignatureDto } from '../../mp/dtos/wx-check-signature.dto';
+import { UtilsSignature, Signature } from './utils-signature';
 @Injectable()
 export class UtilsService {
   // sha1加密
@@ -77,5 +78,10 @@ export class UtilsService {
       typeof v === 'object' &&
       Object.prototype.toString.call(v) == '[object Object]'
     );
+  }
+
+  // 创建签名验证实例
+  createSignature(options: Signature) {
+    return new UtilsSignature(options);
   }
 }

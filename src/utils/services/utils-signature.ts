@@ -5,7 +5,7 @@ import {
   parseCSTInLocation,
   subInLocation,
 } from './utils-date';
-type Signature = {
+export type Signature = {
   key: string;
   secret: string;
   ttl: number;
