@@ -1,17 +1,17 @@
 import { defineComponent, h, ref } from 'vue';
-import Kiko from 'kiko';
-import axios from 'axios';
+import { request } from 'request';
 
 // App
 export default defineComponent((props, { emit }) => {
   async function handleTestClick() {
-    axios.post(
-      '/authorized/test',
-      {
+    request({
+      method: 'POST',
+      url: '/authorized/test',
+      data: {
         username: 'ds',
         b: '333',
         a: '我爱你',
-        e: [2, 3, 'ssseee'],
+        e: [2, 3, 'your name is han mei mei'],
         f: {
           a: 2,
           c: '444',
@@ -19,28 +19,7 @@ export default defineComponent((props, { emit }) => {
         },
         r: true,
       },
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          Authorization: 'admin lsjflekjfskle',
-          'Authorization-Date': '2022-01-21 23:32:11',
-        },
-      },
-    );
-    // const response = await new Kiko().fetch('/authorized/test', {
-    //   method: 'POST',
-    //   body: {
-    //     username: 'ds',
-    //     b: '333',
-    //     a: '我爱你',
-    //     e: [2, 3, 'ssseee'],
-    //     f: {
-    //       a: 2,
-    //       c: '444',
-    //       b: [{ s: 1 }, 3],
-    //     },
-    //   },
-    // });
+    });
   }
   return () =>
     h('div', null, [
