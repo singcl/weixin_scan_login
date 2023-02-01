@@ -18,7 +18,6 @@ export class TokenStrategy extends PassportStrategy(Strategy, 'checkToken') {
   }
 
   async validate(token: string): Promise<any> {
-    console.log('---checkToken');
     return await this.authService.validateToken(token);
   }
 }
