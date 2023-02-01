@@ -1,9 +1,5 @@
 export const environments = {
-  development: [
-    'env/.env.development.local',
-    'env/.env.development',
-    'env/.env',
-  ],
-  test: ['env/.env.test.local', 'env/.env.test', 'env/.env'],
-  production: ['env/.env.production.local', 'env/.env.production', 'env/.env'],
+  development: ['.env.development.local', '.env.development', '.env'],
+  test: ['.env.test.local', '.env.test', '.env'],
+  production: ['.env.production.local', '.env.production', '.env'],
 };
