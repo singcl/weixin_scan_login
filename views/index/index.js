@@ -1,10 +1,10 @@
 import { defineComponent, h, ref } from 'vue';
-import { request } from 'request';
+import axiosX from 'axiosX';
 
 // App
 export default defineComponent((props, { emit }) => {
   async function handleTestClick() {
-    request({
+    axiosX({
       method: 'POST',
       url: '/authorized/test',
       data: {

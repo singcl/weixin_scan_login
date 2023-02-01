@@ -2,6 +2,7 @@ import { h, defineComponent, onMounted, onBeforeUnmount, ref } from 'vue';
 import naive from 'naive';
 import WeChat from '@vicons/ionicons5/WeChat.min.js';
 import ReloadCircle from '@vicons/ionicons5/ReloadCircle.min.js';
+import axiosX from 'axiosX';
 //
 export default defineComponent((props, { emit }) => {
   //
@@ -29,21 +30,16 @@ export default defineComponent((props, { emit }) => {
   const timer = ref();
   //
   async function getMiniToken() {
-    const response = await fetch('/mp/mini-token');
-    const data = await response.json();
+    const response = await axiosX({ url: '/mp/mini-token' });
+    const data = await response.data;
     return data.data;
   }
 
   async function checkLogin(sessionKey) {
-    const response = await fetch(
-      `/mp/mini/scan/check?sessionKey=${sessionKey}`,
-      {
-        headers: {
-          WxToken: localStorage.getItem('WxToken'),
-        },
-      },
-    );
-    const data = await response.json();
+    const response = await axiosX({
+      url: `/mp/mini/scan/check?sessionKey=${sessionKey}`,
+    });
+    const data = await response.data;
     if (![200, 201].includes(response.status)) {
       clearTimeout(timer.value);
       return Promise.reject(data);

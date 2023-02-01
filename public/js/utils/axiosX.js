@@ -4,9 +4,9 @@ import axios from '/js/lib/axios.min.js';
 const businessKey = 'admin';
 const businessSecret = '12878dd962115106db6d';
 
-export function request(options) {
+function request(options) {
   const { url, method = 'GET', data = {}, params = {}, headers = {} } = options;
-  const token = localStorage.getItem('_login_token_');
+  const token = localStorage.getItem('WxToken');
   const arr = url.split('?');
   const path = arr[0];
   const query = Qs.parse(arr[1]);
@@ -77,3 +77,5 @@ function getCSTDate() {
     (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()); // "秒"
   return CSTDate;
 }
+
+export default request;

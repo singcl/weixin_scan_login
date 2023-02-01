@@ -11,7 +11,7 @@
           "vue": "/js/vue/vue3.esm-browser.min.js",
           "@vicons/ionicons5/": "/js/@vicons/ionicons5/es/",
           "naive": "/js/vue/naive.min.js",
-          "axios": "/js/lib/axios.min.js"
+          "axiosX": "/js/utils/axiosX.js"
         } 
       }
     </script>
@@ -22,6 +22,8 @@
   <input type="hidden" id="nodeEnv" value="{{nodeEnv}}">
   <input type="hidden" id="headerLoginToken" value="{{headerLoginToken}}">
   <div id='app'></div>
+  <script src="/js/lib/authorization/crypto-js.min.js"></script>
+  <script src="/js/lib/qs.js"></script>
   <script type="module">
     window.__NEST_DATA__ = {
       nodeEnv: "{{ nodeEnv }}",

@@ -9,6 +9,7 @@ import {
 import naive from 'naive';
 import WeChat from '@vicons/ionicons5/WeChat.min.js';
 import ReloadCircle from '@vicons/ionicons5/ReloadCircle.min.js';
+import axiosX from 'axiosX';
 //
 export default defineComponent((props, { emit }) => {
   //
@@ -28,18 +29,16 @@ export default defineComponent((props, { emit }) => {
   const timer = ref();
   //
   async function getQrcodeInfo() {
-    const response = await fetch('/mp/qrcode');
-    const data = await response.json();
+    const response = await axiosX({ url: '/mp/qrcode' });
+    const data = await response.data;
     return data.data;
   }
 
   async function checkLogin(sessionKey) {
-    const response = await fetch(`/mp/qrcode/check?sessionKey=${sessionKey}`, {
-      headers: {
-        WxToken: localStorage.getItem('WxToken'),
-      },
+    const response = await axiosX({
+      url: `/mp/qrcode/check?sessionKey=${sessionKey}`,
     });
-    const data = await response.json();
+    const data = await response.data;
     return data;
   }
 
