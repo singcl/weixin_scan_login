@@ -23,7 +23,7 @@ function request(options) {
       'Content-Type': 'application/x-www-form-urlencoded',
       Authorization: auth.authorization,
       'Authorization-Date': auth.date,
-      Token: token,
+      WxToken: token,
     },
     headers,
   );
