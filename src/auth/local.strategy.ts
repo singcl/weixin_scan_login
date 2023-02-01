@@ -13,7 +13,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'checkScan') {
   ) {
     super({
       tokenFields: ['sessionKey'],
-      params: true,
+      // params: true, // check req.params
       passReqToCallback: true,
     });
   }
