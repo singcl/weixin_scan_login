@@ -1,3 +1,6 @@
 declare module 'axiosX' {
-  export * from 'axios';
+  import { AxiosInstance } from 'axios';
+  // export * from 'axios';
+  const axiosX: AxiosInstance;
+  export default axiosX;
 }
