@@ -5,7 +5,7 @@ const rename = require('gulp-rename');
 
 // @see https://gulpjs.com/docs/en/getting-started/working-with-files
 exports.default = function () {
-  return src('public/**/*.js')
+  return src(['public/**/*.js', '!public/**/*.min.js'])
     .pipe(uglify())
     .pipe(rename({ extname: '.min.js' }))
     .pipe(dest('public/'));
