@@ -38,3 +38,6 @@ $ npm run test:cov
 - [ ] 自定义异常拦截器记录必要的 Trace 日志
 - [ ] 自定义异常拦截器发送必要的提醒邮件
 - [ ] 定时任务
+
+## CAS
+![cas](./sso_cas.jpg)
