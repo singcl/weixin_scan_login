@@ -3,6 +3,7 @@ import { Module, CacheModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { redisStore } from 'cache-manager-redis-yet';
+import type { RedisClientOptions } from 'redis';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { AppController } from './app.controller';
@@ -29,13 +30,24 @@ import { Authorized } from './authorized/authorized.entity';
       isGlobal: true,
       validationSchema,
     }),
-    CacheModule.register({
-      // @ts-ignore
-      store: redisStore,
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
+    CacheModule.registerAsync<RedisClientOptions>({
       isGlobal: true,
+      useFactory: async (config: ConfigService) => {
+        const store = await redisStore({
+          socket: {
+            host: config.get('REDIS_HOST'),
+            port: config.get('REDIS_PORT'),
+          },
+        });
+        return { store };
+      },
     }),
+    // CacheModule.register({
+    //   store: redisStore,
+    //   host: process.env.REDIS_HOST,
+    //   port: process.env.REDIS_PORT,
+    //   isGlobal: true,
+    // }),
     // TypeOrmModule.forRoot({
     //   type: 'mysql',
     //   host: 'localhost',
