@@ -31,6 +31,8 @@ import { Authorized } from './authorized/authorized.entity';
       validationSchema,
     }),
     CacheModule.registerAsync<RedisClientOptions>({
+      imports: [ConfigModule],
+      inject: [ConfigService],
       isGlobal: true,
       useFactory: async (config: ConfigService) => {
         const store = await redisStore({
