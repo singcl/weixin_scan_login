@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'FRPS.IMCOCO._8994',
+      name: 'WEIXIN.SCAN_LOGIN_8994',
       script: './dist/main.js', // 实际启动脚本
       cwd: './', // "当前工作路径"
       node_args: '--harmony', // node运行模式
